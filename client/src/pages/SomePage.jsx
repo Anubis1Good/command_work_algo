@@ -9,7 +9,7 @@ export default function () {
     },[])
     return (
         <>
-        <h1>Test Page1</h1>
+        <h1>Test Page</h1>
         </>
     )
 }
