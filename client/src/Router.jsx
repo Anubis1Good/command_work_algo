@@ -3,6 +3,7 @@ import AboutPage from './pages/AboutPage.jsx'
 import MainPage from './pages/MainPage.jsx'
 import ErrorPage from './pages/ErrorPage.jsx'
 import SomePage from './pages/SomePage.jsx'
+import RegisterPage from './pages/RegisterPage.jsx'
 
 export const router = createBrowserRouter([
     {
@@ -20,6 +21,10 @@ export const router = createBrowserRouter([
     {
       path: "test",
       element: <SomePage/>
+    },
+    {
+      path: "register",
+      element: <RegisterPage/>
     }
 
   ])
