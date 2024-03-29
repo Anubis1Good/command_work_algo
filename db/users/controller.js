@@ -1,15 +1,6 @@
-import argon2 from 'argon2'
+import { hashPassword } from './utils.js';
+import sqlite3 from 'sqlite3'
 
-
-async function hashPassword(password) {
-    return (await argon2.hash(password, 
-        {
-            type: argon2.argon2id,
-            memoryCost: 2 ** 18,
-            timeCost: 12,
-            parallelism: 2
-        }))
-    }
 
 
 class UsersDB {
@@ -42,4 +33,5 @@ class UsersDB {
         });
     }
 };
-export default UsersDB;
+const instance = new UsersDB(new sqlite3.Database('./db/users/users.sqlite3'));
+export default instance;    
