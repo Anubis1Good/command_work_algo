@@ -10,15 +10,16 @@ class TokensDB{
     }
     async createToken(id) {
         const token = random.generate(32);
-        return this.db.run("INSERT INTO tokens (id, token) VALUES (?, ?)", [id, token]);
+        this.db.run("INSERT INTO tokens (id, token) VALUES (?, ?)", [id, token]);
+        return token;
     }
     async existsToken(id, token) {
         return new Promise((resolve, reject) => {
-            this.db.get("SELECT * FROM tokens WHERE token_id = ?", [id], function(err, row) {
+            this.db.get("SELECT * FROM tokens WHERE id = ? AND token = ?", [id, token], function(err, row) {
                 if (err) {
                     reject(err);
                 } else {
-                    resolve(row.token === token ? true : false);
+                    resolve(row && row.token === token ? true : false);
                 }
             });
         });
