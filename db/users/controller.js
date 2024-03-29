@@ -10,9 +10,9 @@ class UsersDB {
             db.run("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, username TEXT, hash TEXT)");
         });
     }
-    async putUser(id, name, password) {
+    async createUser(name, password) {
         const hash = await hashPassword(password)
-        return this.db.run("INSERT INTO users (id, username, hash) VALUES (?, ?, ?)", [id, name, hash]);
+        return this.db.run("INSERT INTO users (username, hash) VALUES (?, ?)", [name, hash]);
     
     }
     async delUser(id) {
@@ -32,6 +32,5 @@ class UsersDB {
             });
         });
     }
-};
-const instance = new UsersDB(new sqlite3.Database('./db/users/users.sqlite3'));
-export default instance;    
+}
+export default new UsersDB(new sqlite3.Database('db.sqlite3'));  
