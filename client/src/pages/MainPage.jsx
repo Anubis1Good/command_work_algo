@@ -4,8 +4,9 @@ export default function () {
     return (
         <>
             <h1>mainPage</h1>
-            <JButton title="ClickMe!" handle={()=>alert('hello!')}/>
-            <Counter initValue={0}/>
+            <JButton clName='superbutton' title="ClickMe!" handle={()=>alert('hello!')}/>
+            <JButton clName='normalbutton' title="ClickMe!" handle={()=>alert('hello!')}/>
+            {/* <Counter initValue={0}/> */}
         </>
     )
 }

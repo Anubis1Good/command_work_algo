@@ -1,0 +1,25 @@
+div{
+    display: grid;
+    
+    background-color: chartreuse;
+    width: 500px;
+    height: 400px;
+    border-radius: 10px;
+    border: 3px #000 solid;
+    align-items: baseline;
+    justify-content: space-around;
+
+}
+h1{
+    text-align: center;
+}
+.email{
+    padding: 15px;
+
+}
+.password{
+
+}
+.register{
+
+}
