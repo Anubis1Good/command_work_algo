@@ -1,6 +1,7 @@
-import { sqlite3 } from "sqlite3";
+import sqlite3 from "sqlite3";
 import { hashPassword } from "./utils.js";
 import argon2 from "argon2";
+import randomstring from "randomstring"
 const db = new sqlite3.Database('./database.db', (err) => {
     if (err) {
         console.error(err.message);
@@ -124,7 +125,7 @@ class TokensDB {
      * @returns {Promise<string>} - The newly created token
      */
     async createToken(id) {
-        const token = random.generate(64)
+        const token = randomstring.generate(64)
         const query = "INSERT INTO tokens (user_id, token) VALUES (?, ?)"
         const params = [id, token]
         
@@ -144,6 +145,15 @@ class TokensDB {
 
         return new Promise((resolve, reject) => {
             this.db.get(query, params, (error, row) => {error? reject(error) : resolve(row)});
+        })
+    }
+
+    async deleteToken(token) {
+        const query = "DELETE FROM tokens WHERE token = ?"
+        const params = [token]
+
+        return new Promise((resolve, reject) => {
+            this.db.run(query, params, (error) => {error? reject(error) : resolve()});
         })
     }
 }
@@ -168,10 +178,16 @@ class UsersDB {
      */
     async createUser(name, password) {
         const query = "INSERT INTO users (username, hash) VALUES (?, ?)";
-        const params = [name, hashPassword(password)];
 
-        return new Promise((resolve, reject) => {
-            this.db.run(query, params, (error) => {error? reject(error) : resolve(this.lastID)});
+
+        return new Promise(async (resolve, reject) => {
+            try{
+                const hash = await hashPassword(password);
+                this.db.run(query, [name, hash], (error) => {error? reject(error) : resolve(this.lastID)});
+            }
+            catch(error){
+                reject(error)
+            }
         });
     }
 
@@ -194,11 +210,10 @@ class UsersDB {
         const params = [id];
 
         return new Promise((resolve, reject) => {
-            this.db.get(query, params, (error, row) => {if(error){reject(error);return}hash = row.hash;});
-            const promise = argon2.verify(row.hash, password);
-
-            promise.then((result) => resolve(result)).catch((error) => reject(error));
-
+            this.db.get(query, params, (error, row) => {
+                if (error) {reject(error); return}
+                if (!row) {resolve(false); return}
+                argon2.verify(row.hash, password).then((result) => resolve(result)).catch((error) => reject(error));});
         });
     }
 

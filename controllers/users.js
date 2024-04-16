@@ -1,5 +1,5 @@
 import {users, tokens} from '../db/controller.js'
-import {isBetween} from './utils'
+import {isBetween} from './utils.js'
 
 
 
@@ -22,17 +22,17 @@ export const createUser = async (req, res) => {
   const { name, password } = req.body;
 
   if (!isValidUser(name, password)) {
-    return res.status(400).json({ error: 'Invalid parameters' });
+    return res.json({ error: 'Invalid parameters' }).status(400);
   }
 
   try {
     const id = await users.createUser(name, password);
     const token = await tokens.createToken(id);
 
-    res.status(201).json({ response: id }).cookie('auth_token', token);
+    res.cookie('auth_token', token).json({ response: id }).status(201);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.json({ error: 'Internal server error' }).status(500);
   }
 };
 
@@ -40,26 +40,38 @@ export const loginUser = async (req, res) => {
   const { name, password } = req.body;
 
   if (!isValidUser(name, password)) {
-    return res.status(400).json({ error: 'Invalid parameters' });
+    return res.json({ error: 'Invalid parameters' }).status(400);
   }
 
   if (req.cookies.auth_token) {
-    return res.status(401).json({ error: 'Already logged in' });
+    return res.json({ error: 'Already logged in' }).status(401);
   }
 
   try {
     const id = await users.getIdByName(name);
     if (!id || !await users.matchesPassword(id, password)) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+      return res.json({ error: 'Invalid credentials' }).status(401);
     }
 
     const token = await tokens.createToken(id);
 
-    res.status(200).json({ response: id }).cookie('auth_token', token);
+    res.cookie('auth_token', token).json({ response: id }).status(200);
 
 
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.json({ error: 'Internal server error' }).status(500);
   }
+}
+
+export const logoutUser = (req, res) => {
+  if (!req.cookies.auth_token) {
+    return res.json({ error: 'Not logged in' }).status(401);
+  }
+
+  tokens.deleteToken(req.cookies.auth_token).catch((error) => {
+    console.error(error);
+    return res.json({ error: 'Internal server error' }).status(500);
+  });
+  res.clearCookie('auth_token').json({ response: 'Logged out' }).status(200);
 }
