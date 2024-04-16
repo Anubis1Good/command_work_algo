@@ -1,73 +1,65 @@
-import UsersDB from '../db/users/controller.js'
-import tokenDB from '../db/tokens/controller.js'
+import {users, tokens} from '../db/controller.js'
+import {isBetween} from './utils'
 
-/**
- * Checks if a user is authenticated
- * @private
- * @param {Object} req - Express request object
- * @param {Object} res - Express response object
- * @param {Function} next - Express next middleware function
- * @returns {Promise<void>} - Resolves if the user is authenticated, rejects otherwise
- */
-const authenticate = (req, res, next) =>
-  tokenDB.matchesToken(req.cookies.token)
-    .then(exists => {
-      if (exists) {
-        next()
-      } else {
-        res.status(401).json({ error: 'Not authorized' })
-      }
-    })
 
-/**
- * Validates the request body for creating a new user
- * @private
- * @param {Object} req - Express request object
- * @param {Object} res - Express response object
- * @param {Function} next - Express next middleware function
- * @returns {Promise<void>} - Resolves if the request body is valid, rejects otherwise
- */
-const validateBody = (req, res, next) => {
-  if (typeof req.body.name === 'string' && typeof req.body.password === 'string') {
-    next()
-  } else {
-    res.status(400).json({ error: 'Invalid request body' })
+
+const isValidUser = (name, password) => {
+  return (typeof name === 'string' && typeof password === 'string' &&
+          isBetween(name.length, 3, 20) && isBetween(password.length, 10, 32));
+};
+
+const authenticated = (req, res) => {
+  try{
+  const id = tokens.matchesToken(req.cookies.auth_token);
+  }
+  catch(error){
+    console.error(error)
+    return null
+  }
+};
+
+export const createUser = async (req, res) => {
+  const { name, password } = req.body;
+
+  if (!isValidUser(name, password)) {
+    return res.status(400).json({ error: 'Invalid parameters' });
+  }
+
+  try {
+    const id = await users.createUser(name, password);
+    const token = await tokens.createToken(id);
+
+    res.status(201).json({ response: id }).cookie('auth_token', token);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+export const loginUser = async (req, res) => {
+  const { name, password } = req.body;
+
+  if (!isValidUser(name, password)) {
+    return res.status(400).json({ error: 'Invalid parameters' });
+  }
+
+  if (req.cookies.auth_token) {
+    return res.status(401).json({ error: 'Already logged in' });
+  }
+
+  try {
+    const id = await users.getIdByName(name);
+    if (!id || !await users.matchesPassword(id, password)) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    const token = await tokens.createToken(id);
+
+    res.status(200).json({ response: id }).cookie('auth_token', token);
+
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 }
-
-/**
- * Creates a new user and assigns them a token
- * @public
- * @param {Object} req - Express request object
- * @param {Object} res - Express response object
- * @returns {Promise<{response: Object}>} - Resolves with the newly created user id and a token set in a cookie
- */
-export const createUser = async (req, res) =>
-  validateBody(req, res, async () => {
-    const userId = await UsersDB.createUser(req.body.name, req.body.password)
-    res.json({ response: userId })
-      .cookie('token', await tokenDB.createToken(userId))
-  })
-/**
- * Deletes a user
- * @public
- * @param {Object} req - Express request object
- * @param {Object} res - Express response object
- * @returns {Promise<{response: Object}>} - Resolves with a confirmation message
- */
-export const deleteUser = async (req, res) =>{
-  authenticate(req, res, async () => 
-    res.json({ response: await UsersDB.delUser(req.userId) }))
-}
-/**
- * Changes a user's password
- * @public
- * @param {Object} req - Express request object
- * @param {Object} res - Express response object
- * @returns {Promise<{response: Object}>} - Resolves with a confirmation message
- */
-export const changePassword = async (req, res) => {
-  authenticate(req, res, async () =>
-    res.json({ response: await UsersDB.changePassword(req.userId, req.body.password) }))
-}
-
