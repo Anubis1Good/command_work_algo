@@ -6,7 +6,7 @@ export function isBetween(number,a, b, inclusive) {
     return inclusive? number >= min && number <= max : number > min && number < max;
   };
 
-export const authenticate = async (req, res) => {
+export const authenticate =   async (req, res) => {
     try{
         return await tokens.matchesToken(req.cookies.auth_token);
     }
