@@ -12,7 +12,6 @@ const isValidUser = (name, password) => {
 
 export const createUser = async (req, res) => {
   const { name, password } = req.body;
-
   if (!isValidUser(name, password)) {
     return res.json({ error: 'Invalid parameters' }).status(400);
   }
@@ -42,7 +41,8 @@ export const loginUser = async (req, res) => {
   }
 
   const user_id = await authenticate(req, res);
-  if (user_id != null && req.cookies.auth_token) {
+  console.log(user_id)
+  if (user_id != null) {
     return res.json({ error: 'Already logged in' }).status(401);
   }
 

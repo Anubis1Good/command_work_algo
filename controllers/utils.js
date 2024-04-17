@@ -8,7 +8,7 @@ export function isBetween(number,a, b, inclusive) {
 
 export const authenticate = async (req, res) => {
     try{
-        return await tokens.matchesToken(req, res);
+        return await tokens.matchesToken(req.cookies.auth_token);
     }
     catch(error){
       console.error(error)
