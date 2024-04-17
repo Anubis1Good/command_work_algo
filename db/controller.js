@@ -2,7 +2,7 @@ import sqlite3 from "sqlite3";
 import { hashPassword } from "./utils.js";
 import argon2 from "argon2";
 import randomstring from "randomstring"
-const db = new sqlite3.Database('./database.db', (err) => {
+const db = new sqlite3.Database(':memory:', (err) => {
     if (err) {
         console.error(err.message);
     }
@@ -14,38 +14,41 @@ const db = new sqlite3.Database('./database.db', (err) => {
 class ChatsDB{
     constructor(db) {
         this.db = db;
-        db.run(`CREATE TABLE IF NOT EXISTS chats (
-            id INTEGER PRIMARY KEY,
-            create_time INTEGER,
-            name TEXT,
-            owner_id INTEGER, 
-            UNIQUE(name, owner_id), 
-            FOREIGN KEY(owner_id) REFERENCES users(id))`);
+        db.serialize(() => {
+        
+            db.run(`CREATE TABLE IF NOT EXISTS chats (
+                id INTEGER PRIMARY KEY,
+                create_time INTEGER,
+                name TEXT,
+                owner_id INTEGER, 
+                FOREIGN KEY(owner_id) REFERENCES users(id))`);
+            // fuck sqlite
+            db.run(`CREATE TABLE IF NOT EXISTS chat_members (
+                id INTEGER PRIMARY KEY,
+                chat_id INTEGER,
+                user_id INTEGER,
+                FOREIGN KEY(chat_id) REFERENCES chats(id),
+                FOREIGN KEY(user_id) REFERENCES users(id))`);
+});
     }
 
-    /**
-     * Creates a new chat and saves it to the database
-     * @public
-     * @param {string} name - The name of the chat
-     * @param {number} owner_id - The id of the owner of the chat
-     * @returns {Promise<number>} - The id of the created chat
-     */
     async createChat(name, owner_id) {
         const query = "INSERT INTO chats (name, owner_id, create_time) VALUES (?, ?, ?)";
         const params = [name, owner_id, Date.now()];
 
         return new Promise((resolve, reject) => {
-            this.db.run(query, params, (error) => {error? reject(error): resolve(this.lastID)});
+            this.lastID = this.db.run(query, params, (error) => {error? reject(error): null;}).lastID;
+            try {
+                self.addMember(this.lastID, owner_id);
+                resolve(this.lastID);
+            }
+            catch(error) {
+                reject(error)
+            }
         }
     );
     }
 
-    /**
-     * Gets a chat from the database
-     * @public
-     * @param {number} id - The id of the chat
-     * @returns {Promise<Object>} - The chat object
-     */
     async getChat(id) {
         const query = "SELECT * FROM chats WHERE id = ?";
         const params = [id];
@@ -54,6 +57,53 @@ class ChatsDB{
           this.db.get(query, params, (error, row) => {error? reject(error) : resolve(row);});
       });
     }
+
+
+    async deleteChat(id) {
+        const query = "DELETE FROM chats WHERE id = ?";
+        const params = [id];
+
+        return new Promise((resolve, reject) => {
+            this.db.run(query, params, (error) => {error? reject(error) : resolve()});
+        });
+    }
+
+    async addMember(chat_id, user_id) {
+        const query = "INSERT INTO chat_members (chat_id, user_id) VALUES (?, ?)";
+        const params = [chat_id, user_id];
+
+        return new Promise((resolve, reject) => {
+            this.db.run(query, params, (error) => {error? reject(error) : resolve()});
+        });
+    }
+
+    async deleteMember(chat_id, user_id) {
+        const query = "DELETE FROM chat_members WHERE chat_id = ? AND user_id = ?";
+        const params = [chat_id, user_id];
+
+        return new Promise((resolve, reject) => {
+            this.db.run(query, params, (error) => {error? reject(error) : resolve()});
+        });
+    }
+    
+    async getMembersFromChat(chat_id) {
+        const query = "SELECT user_id FROM chat_members WHERE chat_id = ?";
+        const params = [chat_id];
+
+        return new Promise((resolve, reject) => {
+            this.db.all(query, params, (error, rows) => {error? reject(error) : resolve(rows)});
+        });
+    }
+
+    async getChatsFromUser(user_id) {
+        const query = "SELECT chat_id FROM chat_members WHERE user_id = ?";
+        const params = [user_id];
+
+        return new Promise((resolve, reject) => {
+            this.db.all(query, params, (error, rows) => {error? reject(error) : resolve(rows)});
+        });
+    }
+
 }
 
 class MessagesDB {
@@ -72,14 +122,6 @@ class MessagesDB {
         `);
     }
 
-    /**
-     * Creates a new message and saves it to the database
-     * @public
-     * @param {number} chat_id - The id of the chat the message belongs to
-     * @param {number} sender_id - The id of the user who sent the message
-     * @param {string} message - The message to save
-     * @returns {Promise<number>} - The id of the created message
-     */
     async createMessage(chat_id, sender_id, message) {
         const query = "INSERT INTO messages (chat_id, sender_id, send_time, message) VALUES (?, ?, ?, ?)";
         const params = [chat_id, sender_id, Date.now(), message];
@@ -88,13 +130,7 @@ class MessagesDB {
             this.db.run(query, params, (error) => {error? reject(error) : resolve(this.lastID)});
         });
     }
-    
-    /**
-     * Retrieves a message from the database
-     * @public
-     * @param {number} id - The id of the message to retrieve
-     * @returns {Promise<{id: number, chat_id: number, sender_id: number, send_time: number, message: string}>}
-     */
+
     async getMessage(id) {
         const query = "SELECT * FROM messages WHERE id = ?";
         const params = [id];
@@ -133,18 +169,13 @@ class TokensDB {
             this.db.run(query, params, (error) => {error? reject(error) : resolve(token)});
         })
     }
-    /**
-     * Checks if a token exists in the database
-     * @public
-     * @param {string} token - The token to check
-     * @returns {Promise<number>} - The id of the user who owns the token
-     */
-    async matchesToken(token) {
-        const query = "SELECT user_id FROM tokens WHERE token = ?"
-        const params = [token]
+
+    async getToken(id) {
+        const query = "SELECT token FROM tokens WHERE user_id = ?"
+        const params = [id]
 
         return new Promise((resolve, reject) => {
-            this.db.get(query, params, (error, row) => {error? reject(error) : resolve(row)});
+            this.db.get(query, params, (error, row) => {error? reject(error) : resolve(!row? null : row.token)});
         })
     }
 
@@ -154,6 +185,18 @@ class TokensDB {
 
         return new Promise((resolve, reject) => {
             this.db.run(query, params, (error) => {error? reject(error) : resolve()});
+        })
+    }
+
+    async matchesToken(token) {
+        const query = "SELECT user_id FROM tokens WHERE token = ?"
+        const params = [token]
+
+        return new Promise((resolve, reject) => {
+            this.db.get(query, params, (error, row) => {
+                if(error) reject(error)
+                else resolve(!row? null : row.user_id)
+            });
         })
     }
 }
@@ -169,13 +212,6 @@ class UsersDB {
             `);
     }
 
-    /**
-     * @public
-     * @description Creates a new user
-     * @param {string} name - The username of the user
-     * @param {string} password - The users password
-     * @returns {Promise<number>} - The id of the created user
-     */
     async createUser(name, password) {
         const query = "INSERT INTO users (username, hash) VALUES (?, ?)";
 
@@ -183,7 +219,11 @@ class UsersDB {
         return new Promise(async (resolve, reject) => {
             try{
                 const hash = await hashPassword(password);
-                this.db.run(query, [name, hash], (error) => {error? reject(error) : resolve(this.lastID)});
+                this.db.run(query, [name, hash], function(error) {
+                        if(error) reject(error);
+                        else resolve(this.lastID);
+                    });
+                
             }
             catch(error){
                 reject(error)
@@ -191,12 +231,6 @@ class UsersDB {
         });
     }
 
-    /**
-     * @public
-     * @description Deletes a user
-     * @param {number} id - The id of the user to delete
-     * @returns {Promise<void>}
-     */
     async delUser(id) {
         const query = "DELETE FROM users WHERE id = ?";
 
@@ -222,16 +256,10 @@ class UsersDB {
         const params = [name];
 
         return new Promise((resolve, reject) => {
-            this.db.get(query, params, (error, row) => {error? reject(error) : resolve(row.id)});
+            this.db.get(query, params, (error, row) => {error? reject(error) : resolve(row? row.id : null)});
         });
     }
-    /**
-     * @public
-     * @description Updates the password of a user
-     * @param {number} id - The id of the user to update
-     * @param {string} password - The new password of the user
-     * @returns {Promise<void>}
-     */
+
     async changePassword(id, password) {
         const query = "UPDATE users SET hash = ? WHERE id = ?";
 
@@ -240,12 +268,6 @@ class UsersDB {
         });
     }
 
-    /**
-     * @public
-     * @description Retrieves a user by id
-     * @param {number} id - The id of the user
-     * @returns {Promise<{id: number, username: string, hash: string}>}
-     */
     async getUser(id) {
         const query = "SELECT * FROM users WHERE id = ?";
 
