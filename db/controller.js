@@ -22,7 +22,7 @@ class ChatsDB{
                 name TEXT,
                 owner_id INTEGER, 
                 FOREIGN KEY(owner_id) REFERENCES users(id))`);
-            // fuck sqlite
+           
             db.run(`CREATE TABLE IF NOT EXISTS chat_members (
                 id INTEGER PRIMARY KEY,
                 chat_id INTEGER,
