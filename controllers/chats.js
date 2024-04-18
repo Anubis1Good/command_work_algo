@@ -53,7 +53,7 @@ export const getMembers = async (req, res) => {
 
     try {
 
-        if (! await members.isMemberInChat(user_id, req.params.chat_id)) {
+        if (! await chats.isUserinChat(user_id, req.params.chat_id)) {
             return res.json({ error: 'Not a member of this chat' }).status(403);
         }
 
@@ -75,7 +75,7 @@ export const joinChat = async (req, res) => {
         return res.json({ error: 'Invalid parameters' }).status(400);
     }
     try {
-        if (await members.isMemberInChat(user_id, req.params.chat_id)) {
+        if (await chats.isUserinChat(user_id, req.params.chat_id)) {
             return res.json({ error: 'Already a member of this chat' }).status(403);
         }
 

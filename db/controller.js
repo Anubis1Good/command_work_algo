@@ -2,7 +2,7 @@ import sqlite3 from "sqlite3";
 import { hashPassword } from "./utils.js";
 import argon2 from "argon2";
 import randomstring from "randomstring"
-const db = new sqlite3.Database(':memory:', (err) => {
+const db = new sqlite3.Database('./db/database.db', (err) => {
     if (err) {
         console.error(err.message);
     }
@@ -22,7 +22,7 @@ class ChatsDB{
                 name TEXT,
                 owner_id INTEGER, 
                 FOREIGN KEY(owner_id) REFERENCES users(id))`);
-            // fuck sqlite
+           
             db.run(`CREATE TABLE IF NOT EXISTS chat_members (
                 id INTEGER PRIMARY KEY,
                 chat_id INTEGER,
@@ -37,14 +37,29 @@ class ChatsDB{
         const params = [name, owner_id, Date.now()];
 
         return new Promise((resolve, reject) => {
-            this.lastID = this.db.run(query, params, (error) => {error? reject(error): null;}).lastID;
-            try {
-                self.addMember(this.lastID, owner_id);
-                resolve(this.lastID);
-            }
-            catch(error) {
-                reject(error)
-            }
+            this.db.run(query, params, (error) => {if(error) reject(error)
+                try {
+                    // due to closure problems "this" doesn't contain the last id, so we have to use this
+                    this.db.get("SELECT last_insert_rowid() FROM chats", async (error, row) => 
+                    {
+                        if(error) {
+                            reject(error);
+                            return;
+                        }
+                        try {
+                            await this.addMember(row["last_insert_rowid()"], owner_id);
+                            resolve(row["last_insert_rowid()"]);
+                        }
+                        catch(error) {
+                            reject(error);
+                        }
+                    });
+
+                }
+                catch(error) {
+                    reject(error)
+                }
+            });
         }
     );
     }
@@ -104,6 +119,14 @@ class ChatsDB{
         });
     }
 
+    async isUserinChat(user_id, chat_id) {
+        const query = "SELECT * FROM chat_members WHERE user_id = ? AND chat_id = ?";
+        const params = [user_id, chat_id];
+
+        return new Promise((resolve, reject) => {
+            this.db.get(query, params, (error, row) => {error? reject(error) : resolve(Boolean(row));});
+        });
+    }
 }
 
 class MessagesDB {
