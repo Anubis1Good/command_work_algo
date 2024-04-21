@@ -1,15 +1,16 @@
-.dark-light.input{
+.baze.input {
+    border-radius: 17px;
     padding: 2em;
+}
+
+.dark-light.input{
     color: white;
     background: #2c2c2c;
-    border-radius: 17px;
     border: 2px solid #403b8a;
 }    
 
 .light-dark.input{
-    padding: 2em;
     color: rgb(24, 23, 23);
     background:#8780e7;
-    border-radius: 17px;
     border: none;
 }
