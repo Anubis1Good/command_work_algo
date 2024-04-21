@@ -1,0 +1,15 @@
+.logo {
+    height: 50px; 
+}
+.img-profile{
+    height: 50px;
+    width: 50px;
+    border-radius: 25%;
+    background-image: url('client/public/профиль.jpg');
+    background-size: cover;
+}
+.menu{
+    height: 70px;
+    display: flex;
+    justify-content: space-between;
+}
