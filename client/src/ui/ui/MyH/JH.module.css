@@ -1,12 +1,13 @@
-.baze.h {
+.dark.h {
     font-family: "Comfortaa", sans-serif;
     font-optical-sizing: auto;
     font-style: normal;
-}
-.dark.h {
     color:black
 }
 
 .light.h {
-    color:rgb(228, 233, 255)
+    font-family: "Comfortaa", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    color:black
 }
