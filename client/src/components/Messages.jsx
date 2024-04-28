@@ -7,14 +7,14 @@ export default function () {
     // poll api every 1 second
     React.useEffect(() => {
         const fetchData = async () => {
-            const response = await fetch('/api/v1/chats/' + getChatId + '/messages', {
+            const response = await fetch('localhost:3000/api/v1/chats/' + getChatId + '/messages', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
                 },
             });
             const data = await response.json();
-            setMessageQueue(data);
+            setMessages(data);
         }
         const id = setInterval(fetchData, 1000); // adjust poll rate as needed
         return () => clearInterval(id); // cleanup on unmount
