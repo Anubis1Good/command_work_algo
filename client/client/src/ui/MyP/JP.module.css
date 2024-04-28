@@ -1,0 +1,13 @@
+.dark.p {
+    color:black
+}
+
+.light.p {
+    color:rgb(235, 228, 250)
+}
+
+base.p {
+    font-family: "Comfortaa", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
