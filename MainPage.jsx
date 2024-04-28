@@ -6,8 +6,15 @@ export default function () {
         <>
             <h1>mainPage</h1>
             <JButton title="ClickMe!" handle={()=>alert('hello!')}/>
-            <Link to={'/register'}>register</Link>
             <Counter initValue={0}/>
+            <ul>
+                <li><Link to={'/'}>Главная</Link></li>
+                <li><Link to={'/users'}>Пользователи</Link></li>
+                <li><Link to={'/error'}>ErrorPage</Link></li>
+                <li><Link to={'/about'}>AboutPage</Link></li>
+                <li><Link to={'/some'}>SomePage</Link></li>
+                <li><Link to={'/register'}>Регистрация</Link></li>
+            </ul>
         </>
     )
 }

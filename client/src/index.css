@@ -1,0 +1,13 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: rgba(255, 0, 0, 0.458);
+    background-image: url('./assets/Background.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-blend-mode:lighten;
+
+}
+.container {
+    display: flex;
+}
