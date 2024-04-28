@@ -2,6 +2,7 @@ import { Router } from "express";
 import { main } from "../controllers/main.js";
 import { createUser, loginUser, logoutUser, changePassword, deleteUser } from "../controllers/users.js";
 import {getChats, createChat, getMembers, joinChat, leaveChat} from "../controllers/chats.js";
+import { deleteMessage, getMessages, sendMessage } from "../controllers/messages.js";
 const router = Router()
 
 
@@ -133,6 +134,44 @@ router.post('/chats/:chat_id/join', joinChat);
  */
 router.post('/chats/:chat_id/leave', leaveChat);
 
+
+/**
+ * @api {post} /chats/:chat_id/messages Send message to chat
+ * @apiName PostSendMessage
+ * @apiGroup Messages
+ *
+ * @apiHeader {String} Authorization User token
+ * @apiParam {Number} chat_id Chat id
+ * @apiParam {String} message_id Message text
+ * 
+ * @apiSuccess {Number} id Message id
+ */
+router.post('/chats/:chat_id/messages', sendMessage);
+
+/**
+ * @api {delete} /chats/:chat_id/messages/:message_id Delete message
+ * @apiName DeleteDeleteMessage
+ * @apiGroup Messages
+ *
+ * @apiHeader {String} Authorization User token
+ * @apiParam {Number} chat_id Chat id
+ * @apiParam {Number} message_id Message id
+ * 
+ * @apiSuccess {String} message Message deleted
+ */
+router.delete('/chats/:chat_id/messages/:message_id', deleteMessage);
+
+/**
+ * @api {get} /chats/:chat_id/messages Get chat messages
+ * @apiName GetGetMessages
+ * @apiGroup Messages
+ *
+ * @apiHeader {String} Authorization User token
+ * @apiParam {Number} chat_id Chat id
+ * 
+ * @apiSuccess {Object[]} messages Array of messages
+ */
+router.get('/chats/:chat_id/messages', getMessages);
 
 
 export default router
