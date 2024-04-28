@@ -1,0 +1,15 @@
+.dirk.button{
+    color: white;
+    background: #6A5ACD;
+}
+
+.light.button{
+    color: white;
+    background: #1f1f1f;
+}
+
+.base.buttom {
+    border-radius: 17px;
+    padding: 2em;
+    border: none;
+}
