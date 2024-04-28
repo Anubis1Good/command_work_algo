@@ -1,13 +1,21 @@
-// <<<<<<< master
+import { useRef } from "react"
+import { fetchRegistration } from "../utils/queries/registration"
 
 export default function () {
+    const registrationForm = useRef()
+    function formSend(e){
+        e.preventDefault()
+        const {username, password} = registrationForm.current
+        fetchRegistration(username.value, password.value)
+        registrationForm.current.reset()
+    }
     return (
         <>
         <h1>RegisterPage</h1>
 
-        <form action="http://localhost:3000/api/v1/register" method="post">
+        <form onSubmit={(e)=>formSend(e)} ref={registrationForm}>
             <label htmlFor="username"> Username</label>
-            <input type="text" name="name" id="name" />
+            <input type="text" name="username" id="username" />
 
             <label htmlFor="password"> Password</label>
             <input type="password" name="password" id="password" />
@@ -17,6 +25,7 @@ export default function () {
         </>
     )
 
+}
 // =======
 
 // export default function () {
@@ -33,4 +42,3 @@ export default function () {
 //     )
 
 // >>>>>>> master
-}

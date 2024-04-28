@@ -11,7 +11,7 @@ const isValidUser = (name, password) => {
 
 
 export const createUser = async (req, res) => {
-  const { name, password } = req.body;
+  const { name, password } = await req.body;
   if (!isValidUser(name, password)) {
     return res.json({ error: 'Invalid parameters' }).status(400);
   }
