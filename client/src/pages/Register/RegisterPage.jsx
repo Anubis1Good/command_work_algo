@@ -1,19 +1,27 @@
 import { useRef } from "react"
-import { fetchRegistration } from "../utils/queries/registration"
+import { fetchRegistration } from "../../utils/queries/registration"
+import Header from "../../components/Header/Header"
+import styles from "./RegisterPage.module.css"
 
 export default function () {
     const registrationForm = useRef()
-    function formSend(e){
+    async function formSend(e){
         e.preventDefault()
         const {username, password} = registrationForm.current
-        fetchRegistration(username.value, password.value)
+        try{
+         let response = await fetchRegistration(username.value, password.value)
+         console.log(response.body)
+        }
+        catch(error){
+            console.error(error)
+        }
         registrationForm.current.reset()
     }
     return (
         <>
-        <h1>RegisterPage</h1>
+        <Header/>
 
-        <form onSubmit={(e)=>formSend(e)} ref={registrationForm}>
+        <form onSubmit={(e)=>formSend(e)} ref={registrationForm} className={styles.form}>
             <label htmlFor="username"> Username</label>
             <input type="text" name="username" id="username" />
 

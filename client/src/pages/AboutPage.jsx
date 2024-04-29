@@ -1,10 +1,8 @@
-import React from "react"
-import { Link } from "react-router-dom"
-export default function() {
+import Header from "../components/Header/Header.jsx"
+export default function () {
     return (
-        <>
-        <h1>AboutPage</h1>
-        <Link to={'/'}>назад 🤞</Link>
-        </>
+        <div className="container">
+            <Header />
+        </div>
     )
 }

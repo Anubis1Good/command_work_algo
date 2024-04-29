@@ -1,7 +1,8 @@
+import Header from "../components/Header/Header.jsx"
 export default function () {
     return (
-        <>
-        <h1>Error Page</h1>
-        </>
+        <div className="container">
+            <Header />
+        </div>
     )
 }
