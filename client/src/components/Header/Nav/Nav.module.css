@@ -1,0 +1,19 @@
+.links {
+    justify-content: space-evenly;
+}
+
+@media (max-width: 880px) {
+    .links {
+        justify-content: flex-end;
+    }
+}
+
+
+.links > a {
+    text-decoration: none;
+    color: white;
+    font-size: large;
+}
+.links > a:hover {
+    color: #c8adec;
+}
