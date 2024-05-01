@@ -1,10 +1,13 @@
 import styles from './Header.module.css'
-
+import Nav from "../Header/Nav/Nav";
 export default function (){
     return (
-        <header className={styles.menu}>
-            <img className={styles.logo} src="client/public/logo.jpg"/>
-            <a className={styles.img-profile} href="#" ></a>
-        </header>
+        <div className={styles.header}>
+            <div className={styles.brand}>
+                <img src="./logo.png" alt="logo" />
+                <h1>Торпеда</h1>
+            </div>
+            <Nav/>
+        </div>
     )
 }

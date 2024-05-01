@@ -1,6 +1,6 @@
 export default function () {
     return (
-        <div>
+        <div className="container">
             <div className="chat_area">
                 <Messages/>
             </div>
