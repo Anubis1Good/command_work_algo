@@ -1,45 +1,61 @@
-.open {
-    position: absolute;
-    top: 0;
-    width: max-content;
-    height: max-content;
-    z-index: -1 ;
+
+.open{
+    display: flex;
     flex-direction: column;
-    align-items: end;
-    justify-content: start;
-    padding-top: 10vh;
+    gap: 10px;
+
+    background: linear-gradient(130deg, #ce70d6, #793a9f);
+    color: white;
+    height: 90vh;
+    width: max-content;
+    padding-left: 2vw;
+    padding-top: 3vh;
+    padding-right: 10vh;
+    position: absolute;
+    top: 7vh;
+    left: 0;
+    font-size: large;
+    row-gap: 4vh;
+    animation: slide 0.2s alternate;
+    z-index: 1000;
+
+}
+
+@keyframes slide {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
 
 
-    padding-bottom: 4vh;
-    background: linear-gradient( 130deg, #ce70d6, #793a9f);
-
-}    
-
-
-
+@keyframes close {
+    
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-100%);
+        
+    }
+}
+.open > div {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    
+}
+.open > div > svg {
+    font-size: 2.5vh;
+}
 .open > div > a {
     text-decoration: none;
     color: white;
-    font-size: 2.5vh;
-    padding: 0.5rem 1rem;
-
-
-
-}
-.open > div {
-    margin-left: 1rem;
-}
-
-.open  {
-    display: flex;
-    width: 100%;
-    text-align: center;
-    flex-direction: column;
-    align-items: start;
-    justify-content: center;
-    gap: 2rem
 }
 
 .closed {
+
     display: none !important;
 }

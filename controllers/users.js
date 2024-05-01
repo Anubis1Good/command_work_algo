@@ -11,10 +11,14 @@ const isValidUser = (name, password) => {
 
 
 export const createUser = async (req, res) => {
-  const { name, password } = await req.body;
-  console.log(name, password)
-  if (!isValidUser(name, password)) {
+  const { username, password } = req.body;
+  console.log(username, password)
+  if (!username || !password) {
     return res.json({ error: 'Invalid parameters' }).status(400);
+  }
+
+  if (!isValidUser(username, password)) {
+    return res.json({ error: 'Bad username or password. Username must be between 3 and 20 characters and password must be between 10 and 32 characters' }).status(400);
   }
 
   const user_id = await authenticate(req, res);
@@ -22,8 +26,15 @@ export const createUser = async (req, res) => {
   if (user_id != null) {
     return res.json({ error: 'Already logged in' }).status(401);
   }
+
+
   try {
-    const id = await users.createUser(name, password);
+    if (await users.exists(username)) {
+      return res.json({ error: 'User already exists' }).status(409);
+    }
+  
+
+    const id = await users.createUser(username, password);
 
     const token = await tokens.createToken(id);
     res.cookie('auth_token', token).cookie('user_id', id).status(201).send({ response: id });

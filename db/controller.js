@@ -316,6 +316,15 @@ class UsersDB {
             this.db.get(query, id, (error, row) => {error? reject(error) : resolve(row)});
         });
     }
+
+    async exists(name) {
+        const query = "SELECT * FROM users WHERE username = ?";
+        const params = [name];
+
+        return new Promise((resolve, reject) => {
+            this.db.get(query, params, (error, row) => {error? reject(error) : resolve(Boolean(row))});
+        });}
+
 }
 const users = new UsersDB(db)
 const tokens = new TokensDB(db)
