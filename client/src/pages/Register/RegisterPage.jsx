@@ -1,6 +1,6 @@
 import { useRef } from "react"
 import { fetchRegistration } from "../../utils/queries/registration"
-import Header from "../../components/Header/Header"
+
 import styles from "./RegisterPage.module.css"
 
 export default function () {
@@ -18,9 +18,6 @@ export default function () {
         registrationForm.current.reset()
     }
     return (
-        <>
-        <Header/>
-
         <form onSubmit={(e)=>formSend(e)} ref={registrationForm} className={styles.form}>
             <label htmlFor="username"> Username</label>
             <input type="text" name="username" id="username" />
@@ -30,7 +27,6 @@ export default function () {
 
             <input type="submit" value="Register" />
         </form>
-        </>
     )
 
 }

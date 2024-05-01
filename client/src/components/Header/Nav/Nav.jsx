@@ -3,9 +3,11 @@ import React, { useEffect, useRef, useState } from 'react'
 import styles from "./Nav.module.css"
 import { useMediaQuery } from 'react-responsive'
 import Sidebar from "../Sidebar/Sidebar";
+import { RxHamburgerMenu } from "react-icons/rx";
+import { FiHome, FiLogIn, FiUserPlus, FiInfo, FiHelpCircle } from "react-icons/fi";
 
 export default function() {
-    const isMobile = useMediaQuery({ query: '(max-width: 880px)' })
+    const isMobile = useMediaQuery({ query: '(max-width: 1100px)' })
 
     const [isOpen, setIsOpen] = useState(false)
     const toggleNav = () => {setIsOpen(!isOpen)
@@ -13,17 +15,36 @@ export default function() {
 
 
     return (
-        isMobile ?<>
-                <button onClick={toggleNav}>Menu</button>
-                <Sidebar isOpen={isOpen} onToggle={toggleNav}/></>
-        :
-            <div className={isMobile ? styles.linksMobile : styles.links}>
-                <Link to="/">Главная</Link>
-                <Link to="/login">Вход</Link>
-                <Link to="/register">Регистрация</Link>
-                <Link to="/about">О проекте</Link>
-                <Link to="/contacts">Контакты</Link>
+        isMobile ?
+        <>
+        <Sidebar isOpen={isOpen} toggleNav={toggleNav}>
+
+            <div>
+                <FiHome/><Link to="/">Главная </Link>
             </div>
+            <div>
+               <FiLogIn/><Link to="/login">Вход </Link> 
+            </div>
+            <div>
+                <FiUserPlus/><Link to="/register">Регистрация </Link>
+            </div>
+            <div>
+                <FiInfo/><Link to="/about">О проекте</Link>
+            </div>
+            <div>
+                <FiHelpCircle/><Link to="/contacts">Контакты</Link>
+            </div>
+        </Sidebar>
+        <button className={styles.burger} onClick={toggleNav}><RxHamburgerMenu/></button>
+        </>
+        :
+        <div className={styles.links}>
+        <Link to="/">Главная</Link>
+        <Link to="/login">Вход</Link>
+        <Link to="/register">Регистрация</Link>
+        <Link to="/about">О проекте</Link>
+        <Link to="/contacts">Контакты</Link>
+        </div>
 
       );
 }

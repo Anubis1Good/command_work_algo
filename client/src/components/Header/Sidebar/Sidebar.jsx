@@ -1,16 +1,11 @@
-import React, { useState } from 'react'
+import React from 'react'
 import styles from './Sidebar.module.css'
-
-export default function Sidebar({ isOpen, onToggle }) {
-
-
-
+import ReactDOM from 'react-dom';
+export default function Sidebar({ isOpen, children }) {
     return (
-        <div className={`${styles.sidebar} ${isOpen ? styles.open : ''}`}>
-            <div className={styles.overlay} onClick={onToggle}></div>
-            <div className={styles.sidebarContent}>
-                <h3>Sidebar content</h3>
-            </div>
+        <div className={isOpen ? styles.open : styles.closed}>
+            {children}
         </div>
     )
 }
+

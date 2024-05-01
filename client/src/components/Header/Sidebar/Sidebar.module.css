@@ -1,0 +1,46 @@
+.open {
+    position: absolute;
+    top: 0;
+    width: max-content;
+    height: max-content;
+    z-index: -1 ;
+    flex-direction: column;
+    align-items: end;
+    justify-content: start;
+    padding-top: 10vh;
+    gap: 3vh;
+
+    padding-bottom: 4vh;
+    background: linear-gradient( 130deg, #ce70d6, #793a9f);
+
+
+}    
+
+
+.open > div > a {
+    text-decoration: none;
+    color: white;
+    font-size: 2.5vh;
+    gap: 2rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    transition: 0.2s;
+
+}
+.open > div {
+    margin-left: 1rem;
+}
+
+.open  {
+    display: flex;
+    width: 100%;
+    text-align: center;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    gap: 2rem
+}
+
+.closed {
+    display: none !important;
+}

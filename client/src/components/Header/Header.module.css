@@ -9,7 +9,11 @@
     color: white;
     font-size: large;
     height: 7vh;
+    z-index: 2;
     box-shadow: 0 0 20px 4px rgba(0, 0, 0, 0.5);
+
+    position: relative;
+    
 }
 .header > div > img {
     width: 5vh;
@@ -17,6 +21,11 @@
 .header > div {
     display: flex;
     width: 100%;
+}
+
+.header > div > a {
+    text-decoration: none;
+    color: white;
 }
 
 .brand {
