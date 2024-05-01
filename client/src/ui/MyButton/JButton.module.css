@@ -1,0 +1,15 @@
+.light.button{
+    color: rgb(49, 48, 63);
+    background: #6A5ACD;
+}
+
+.dark.button{
+    color: white;
+    background: #1f1f1f;
+}
+
+.baze.input {
+    margin: 1em;
+    border-radius: 17px;
+    border: none;
+}
