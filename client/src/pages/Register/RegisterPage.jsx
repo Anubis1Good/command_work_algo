@@ -6,32 +6,21 @@ import BodyForm from "../../components/BodyForm/BodyForm"
 
 export default function () {
     return (
-        <><Header/>
+        <>
+        <Header/>
         <BodyForm resource="http://localhost:3000/api/v1/register">
-            <label htmlFor="username"> Username</label>
-            <input type="text" name="username" id="username" />
+            <label htmlFor="username">Введите логин</label>
+            <input className={styles.login} type="text" name="username" id="username" />
+          
+            <label htmlFor="password">Введите пароль</label>
+            <input className={styles.login} type="password" name="password" id="password" />
 
-            <label htmlFor="password"> Password</label>
-            <input type="password" name="password" id="password" />
+            {/* <label htmlFor="password">Повторите пароль</label>
+            <input className={styles.password} type="password" name="password" id="password" /> */}
 
-            <button type="submit">Register</button>
-        </BodyForm></>
+            <button className={styles.register} type="submit">Зарегистрироваться</ button>
+        </BodyForm>
+        </>
     )
 
 }
-// =======
-
-// export default function () {
-//     return (
-//         <>
-//         <h1>Страница Регистрации</h1>
-//         <div>
-//             <input>Введите email</input>
-//             <input>Введите пароль</input>
-//             <input>Повторите пароль</input>
-//             <button>Зарегистрироваться</button>
-//         </div>
-//         </>
-//     )
-
-// >>>>>>> master
