@@ -1,12 +1,11 @@
-import Counter from "../components/Counter"
-import JButton from "../ui/JButton"
+import Header from "../components/Header/Header.jsx"
+
 export default function () {
     return (
-        <>
-            <h1>mainPage</h1>
-            <JButton clName='superbutton' title="ClickMe!" handle={()=>alert('hello!')}/>
-            <JButton clName='normalbutton' title="ClickMe!" handle={()=>alert('hello!')}/>
-            {/* <Counter initValue={0}/> */}
-        </>
+        <div className="container">
+            <Header />
+            <h1>Главная</h1>
+            <p>Добро пожаловать на наш сайт!</p>
+        </div>
     )
 }

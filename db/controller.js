@@ -162,6 +162,24 @@ class MessagesDB {
             this.db.get(query, params, (error, row) => {error? reject(error) : resolve(row)});
         });
     }
+
+    async getMessagesFromChat(chat_id) {
+        const query = "SELECT * FROM messages WHERE chat_id = ?";
+        const params = [chat_id];
+
+        return new Promise((resolve, reject) => {
+            this.db.all(query, params, (error, rows) => {error? reject(error) : resolve(rows)});
+        });
+    }
+
+    async deleteMessage(chat_id,message_id) {
+        const query = "DELETE FROM messages WHERE id = ? AND chat_id = ?";
+        const params = [id, chat_id];
+
+        return new Promise((resolve, reject) => {
+            this.db.run(query, params, (error) => {error? reject(error) : resolve()});
+        });
+    }
 }
 
 class TokensDB {

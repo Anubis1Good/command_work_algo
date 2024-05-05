@@ -1,15 +1,27 @@
-.logo {
-    height: 50px; 
-}
-.img-profile{
-    height: 50px;
-    width: 50px;
-    border-radius: 25%;
-    background-image: url('client/public/профиль.jpg');
-    background-size: cover;
-}
-.menu{
-    height: 70px;
+.header {
+    /*red #F96E46 yellow #F2E94E green #96E6B3 blue #A3D9FF gray #7C606B*/
     display: flex;
-    justify-content: space-between;
+    background: linear-gradient(130deg, #ce70d6, #793a9f);
+    padding-left: 2%;
+    padding-right: 2%;
+    align-items: center;
+    justify-content: space-around;
+    color: white;
+    font-size: large;
+    height: 7vh;
+    box-shadow: 0 0 20px 4px rgba(0, 0, 0, 0.5);
 }
+.header > div > img {
+    width: 5vh;
+}
+.header > div {
+    display: flex;
+    width: 100%;
+}
+
+.brand {
+    justify-content: flex-start;
+    align-items: center; 
+    gap: 3%;
+}
+
