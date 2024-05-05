@@ -1,0 +1,71 @@
+
+.open{
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    background: linear-gradient(130deg, #ce70d6, #793a9f);
+    color: white;
+    height: 100vh;
+    width: max-content;
+    min-width: 150px;
+    overflow-y: hidden;
+    padding-top: 2vh;
+    padding-right: 3vh;
+    padding-left: 1vh;
+    padding-bottom: 2vh;
+    margin: 0;
+    position: relative;
+    top: 0;
+    font-size: large;
+    border: none;
+    margin: 0;
+    row-gap: 1%;
+
+}
+.open:modal {
+    animation: slide 0.2s alternate;
+
+}
+
+@keyframes slide {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+.open > a {
+    display: flex;
+    align-items: center;
+    gap: 1vw;
+    padding: 1vh;
+    border-radius: 10px;
+    
+}
+.open> a > svg {
+    font-size: 2.5vh;
+}
+
+.open > a {
+    text-decoration: none;
+    color: white;
+
+}
+.open > a:hover {
+    background-color: rgba(255,255,255,0.1);
+}
+
+.open > a:active {
+    background-color: rgba(255,255,255,0.3);
+}
+
+.open::backdrop {
+    background-color: rgba(0,0,0,0.5);
+}
+
+.closed {
+    display: none;
+}
+

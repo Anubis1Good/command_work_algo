@@ -1,6 +1,10 @@
+
+import Messages from "../components/Messages/Messages"
+import Header from "../components/Header/Header"
 export default function () {
     return (
         <div className="container">
+            <Header/>
             <div className="chat_area">
                 <Messages/>
             </div>
