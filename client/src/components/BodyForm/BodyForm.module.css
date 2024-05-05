@@ -1,0 +1,11 @@
+.div{
+    background-color:antiquewhite;
+    width: 500px;
+    height: 400px;
+    border-radius: 10px;
+    border: 3px #000 solid;
+    margin: 0 auto;
+    margin-top: 5%;
+    padding: 40px;
+    
+}

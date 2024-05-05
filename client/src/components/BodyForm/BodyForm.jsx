@@ -1,3 +1,4 @@
+import styles from "./BodyForm.module.css"
 import { useRef, useState } from 'react'
 export default function BodyForm({children, resource, method="post",contentType="application/json", applyCookies=true}) {
   const formRef = useRef(null)
@@ -26,7 +27,7 @@ export default function BodyForm({children, resource, method="post",contentType=
   }
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit}>
+    <form className={styles.div} ref={formRef} onSubmit={handleSubmit}>
       {children}
       <pre>{JSON.stringify(data, null, 2)}</pre>
     </form>
