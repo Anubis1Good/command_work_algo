@@ -1,8 +1,8 @@
-import Header from "../components/Header/Header.jsx"
+
 export default function () {
     return (
-        <div className="container">
-            <Header />
-        </div>
+        <>
+        <h1>Ваш профиль</h1>
+        </>
     )
 }
