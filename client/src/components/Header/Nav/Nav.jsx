@@ -4,7 +4,7 @@ import styles from "./Nav.module.css"
 
 import Sidebar from "../Sidebar/Sidebar";
 import { RxHamburgerMenu } from "react-icons/rx";
-import { FiHome, FiLogIn, FiUserPlus, FiInfo, FiHelpCircle } from "react-icons/fi";
+import { FiHome, FiLogIn, FiUserPlus, FiInfo, FiHelpCircle} from "react-icons/fi";
 
 export default function() {
 
@@ -16,23 +16,13 @@ export default function() {
 
     return (
         <>
-        <Sidebar isOpen={isOpen} toggleNav={toggleNav}>
+        <Sidebar isOpen={isOpen} setOpen={setIsOpen} toggleNav={toggleNav}>
+                <Link to="/"><FiHome/>Главная</Link>
+                <Link to="/login"><FiLogIn/>Вход</Link> 
+                <Link to="/register"><FiUserPlus/>Регистрация</Link>
+                <Link to="/about"><FiInfo/>О проекте</Link>
+                <Link to="/contacts"><FiHelpCircle/>Контакты</Link>
 
-            <div>
-                <FiHome/><Link to="/">Главная </Link>
-            </div>
-            <div>
-               <FiLogIn/><Link to="/login">Вход </Link> 
-            </div>
-            <div>
-                <FiUserPlus/><Link to="/register">Регистрация </Link>
-            </div>
-            <div>
-                <FiInfo/><Link to="/about">О проекте</Link>
-            </div>
-            <div>
-                <FiHelpCircle/><Link to="/contacts">Контакты</Link>
-            </div>
         </Sidebar>
         <button className={styles.burger} onClick={toggleNav}><RxHamburgerMenu/></button>
 

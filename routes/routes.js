@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { main } from "../controllers/main.js";
-import { createUser, loginUser, logoutUser, changePassword, deleteUser } from "../controllers/users.js";
+import { createUser, loginUser, logoutUser, changePassword, deleteUser, isAuthenticated } from "../controllers/users.js";
 import {getChats, createChat, getMembers, joinChat, leaveChat} from "../controllers/chats.js";
 import { deleteMessage, getMessages, sendMessage } from "../controllers/messages.js";
 const router = Router()
@@ -173,5 +173,15 @@ router.delete('/chats/:chat_id/messages/:message_id', deleteMessage);
  */
 router.get('/chats/:chat_id/messages', getMessages);
 
+/**
+ * @api {get} /authenticated Check if user is authenticated
+ * @apiName GetAuthenticated
+ * @apiGroup Users
+ *
+ * @apiHeader {String} Authorization User token
+ * 
+ * @apiSuccess {Boolean} authenticated User authenticated
+ */
+router.get('/authenticated', isAuthenticated);
 
 export default router

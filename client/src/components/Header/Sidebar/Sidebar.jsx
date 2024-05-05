@@ -1,11 +1,21 @@
-import React from 'react'
+import React ,{useEffect, useRef} from 'react'
 import styles from './Sidebar.module.css'
+export default function Sidebar({ isOpen, setOpen, children }) {
 
-export default function Sidebar({ isOpen, children }) {
+    const ref = useRef(null)
+    useEffect(() => {
+        if (isOpen) {
+            ref.current.showModal()
+        }
+        else {
+            ref.current.close()
+        }
+    }, [isOpen])
+
     return (
-        <div  className={isOpen ? `${styles.open}` : `${styles.closed}`}>
+        <dialog ref ={ref} onMouseDown={(e) => {e.target === ref.current && setOpen(false)}} className={isOpen ? styles.open : styles.closed}>
             {children}
-        </div>
+        </dialog>
     )
 }
 

@@ -9,14 +9,17 @@
     height: 7vh;
     gap: 20px;
     padding-left: 20px;
+    min-height: 50px;
 }
 
 .brand > img {
     height: 5vh;
+    min-height: 30px;
 }
 .brand {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 5%;
+    min-height: 50px;
 }

@@ -3,8 +3,8 @@
 import styles from "./RegisterPage.module.css"
 import Header from "../../components/Header/Header"
 import BodyForm from "../../components/BodyForm/BodyForm"
-export default function () {
 
+export default function () {
     return (
         <><Header/>
         <BodyForm resource="http://localhost:3000/api/v1/register">

@@ -10,12 +10,12 @@ export default function BodyForm({children, resource, method="post",contentType=
     const jsonData = {}
     formData.forEach((value, key) => {jsonData[key] = value})
 
-    fetch(resource, {method: method, body: JSON.stringify(jsonData),credentials: 'include',headers: {'Content-Type': contentType}})
+    fetch(resource, {method: method, credentials: 'include',body: JSON.stringify(jsonData),headers: {'Content-Type': contentType}})
       .then((response) => {
         if (applyCookies) {
-          const cookies = response.headers.get('Set-Cookie');
+          const cookies = response.headers.get('Set-Cookie')
           if (cookies) {
-            cookies.split(';').forEach(cookie => document.cookie = cookie);
+            cookies.forEach(cookie => document.cookie = cookie);
           }
         }
         return response.json()

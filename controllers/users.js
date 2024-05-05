@@ -9,6 +9,11 @@ const isValidUser = (name, password) => {
 };
 
 
+export const isAuthenticated = async (req, res) => {
+  const user_id = await authenticate(req, res);
+
+  res.status(200).send({ response: user_id ? true : false });
+};
 
 export const createUser = async (req, res) => {
   const { username, password } = req.body;
