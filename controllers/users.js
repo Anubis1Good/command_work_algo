@@ -17,7 +17,6 @@ export const isAuthenticated = async (req, res) => {
 
 export const createUser = async (req, res) => {
   const { username, password } = req.body;
-
   if (!username || !password) {
     return res.json({ error: 'Invalid parameters' }).status(400);
   }

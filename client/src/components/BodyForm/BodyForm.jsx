@@ -1,6 +1,8 @@
 import {useRef, useState } from 'react'
 import { registerUser } from '../../utils/queries/register'
-// import { useHistory } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
+
+
 export default function BodyForm({
   children,
   resource,
@@ -11,8 +13,8 @@ export default function BodyForm({
   const formRef = useRef(null);
   const [formData, setFormData] = useState({});
 
-  // const history = useHistory();
-
+  
+  const navigate = useNavigate();
 
 
   const handleSubmit = async (event) => {
@@ -23,10 +25,11 @@ export default function BodyForm({
       ...Object.fromEntries(Object.entries(formDataObject)),
     });
 
-    event.currentTarget.reset();
-    registerUser(event,formRef,setFormData,resource,method,contentType,applyCookies);
 
-    // history.push("/");
+    registerUser(event,formRef,setFormData,resource,method,contentType,applyCookies);
+    event.currentTarget.reset();
+
+    navigate('/');
   };
 
   return (

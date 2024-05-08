@@ -6,13 +6,15 @@ import {AuthContext} from '../AuthProvider';
 
 import { signout } from '../../utils/queries/signout';
 export default function (){
-    const {  isAuthenticated,setIsAuthenticated } = useContext(AuthContext)
+    const [isAuthenticated, setIsAuthenticated] = useContext(AuthContext);
+
     const navigate = useNavigate();
     const handleSignOut = () => {
         setIsAuthenticated(false);
         signout();
         navigate('/');
     }
+    console.log(isAuthenticated)
     return (
         <div className={styles.header}>
             <Nav/>
