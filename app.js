@@ -15,6 +15,9 @@ app.use(cors({
     credentials: true
   }));
 
+app.use((req, res, next) => {
+    console.log(`Request: ${req.method} ${req.url}, ip: ${req.ip}`)
+    next();})
 app.use('/api/v1',routers)
 
 app.listen(PORT,HOSTNAME,()=>{

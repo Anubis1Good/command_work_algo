@@ -42,15 +42,15 @@ router.post('/register', createUser);
 router.post('/login', loginUser);
 
 /**
- * @api {delete} /logout Logout user
- * @apiName DeleteLogout
+ * @api {post} /logout Logout user
+ * @apiName PostLogout
  * @apiGroup Users
  *
  * @apiHeader {String} Authorization User token
  * 
  * @apiSuccess {String} message Logout success
  */
-router.delete('/logout', logoutUser);
+router.post('/logout', logoutUser);
 
 /**
  * @api {patch} /change_password Change user password

@@ -1,35 +1,39 @@
-import { useRef, useState } from 'react'
-export default function BodyForm({children, resource, method="post",contentType="application/json", applyCookies=true}) {
-  const formRef = useRef(null)
-  const [data, setData] = useState({})
+import {useRef, useState } from 'react'
+import { registerUser } from '../../utils/queries/register'
+// import { useHistory } from "react-router-dom";
+export default function BodyForm({
+  children,
+  resource,
+  method = 'post',
+  contentType = 'application/json',
+  applyCookies = true,
+}) {
+  const formRef = useRef(null);
+  const [formData, setFormData] = useState({});
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    const formData = new FormData(formRef.current)
+  // const history = useHistory();
 
-    const jsonData = {}
-    formData.forEach((value, key) => {jsonData[key] = value})
 
-    fetch(resource, {method: method, credentials: 'include',body: JSON.stringify(jsonData),headers: {'Content-Type': contentType}})
-      .then((response) => {
-        if (applyCookies) {
-          const cookies = response.headers.get('Set-Cookie')
-          if (cookies) {
-            cookies.forEach(cookie => document.cookie = cookie);
-          }
-        }
-        return response.json()
-      }
-    )
-      .then((data) => setData(data))
-      .catch((error) => console.error(error))
-  }
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const formDataObject = new FormData(event.currentTarget);
+    setFormData({
+      ...formData,
+      ...Object.fromEntries(Object.entries(formDataObject)),
+    });
+
+    event.currentTarget.reset();
+    registerUser(event,formRef,setFormData,resource,method,contentType,applyCookies);
+
+    // history.push("/");
+  };
 
   return (
     <form ref={formRef} onSubmit={handleSubmit}>
       {children}
-      <pre>{JSON.stringify(data, null, 2)}</pre>
+      <pre>{JSON.stringify(formData, null, 2)}</pre>
     </form>
-  )
+  );
 }
 

@@ -1,5 +1,5 @@
 import sqlite3 from "sqlite3";
-import { hashPassword } from "./utils.js";
+import { generateExpiryTimeSpan, hashPassword, isExpired } from "./utils.js";
 import argon2 from "argon2";
 import randomstring from "randomstring"
 const db = new sqlite3.Database('./db/database.db', (err) => {
@@ -190,6 +190,7 @@ class TokensDB {
                 token_id INTEGER PRIMARY KEY,
                 user_id INTEGER,
                 token TEXT,
+                expire_time TIMESTAMP,
                 FOREIGN KEY(user_id) REFERENCES users(id)
             )
         `)
@@ -203,8 +204,8 @@ class TokensDB {
      */
     async createToken(id) {
         const token = randomstring.generate(64)
-        const query = "INSERT INTO tokens (user_id, token) VALUES (?, ?)"
-        const params = [id, token]
+        const query = "INSERT INTO tokens (user_id, token, expire_time) VALUES (?, ?, ?)"
+        const params = [id, token, generateExpiryTimeSpan()]
         
         return new Promise((resolve, reject) => {
             this.db.run(query, params, (error) => {error? reject(error) : resolve(token)});
@@ -212,11 +213,19 @@ class TokensDB {
     }
 
     async getToken(id) {
-        const query = "SELECT token FROM tokens WHERE user_id = ?"
+        const query = "SELECT token, expire_time FROM tokens WHERE user_id = ?"
         const params = [id]
 
         return new Promise((resolve, reject) => {
-            this.db.get(query, params, (error, row) => {error? reject(error) : resolve(!row? null : row.token)});
+            this.db.get(query, params, (error, row) => {
+                if(error) {reject(error); return}
+                if (!row) {resolve(null); return}
+                if (isExpired(row.expire_time)) {
+                    self.deleteToken(row.token)
+                    resolve(null)
+                }
+                resolve(row.token)
+            });
         })
     }
 
@@ -230,13 +239,18 @@ class TokensDB {
     }
 
     async matchesToken(token) {
-        const query = "SELECT user_id FROM tokens WHERE token = ?"
+        const query = "SELECT user_id, expire_time FROM tokens WHERE token = ?"
         const params = [token]
 
         return new Promise((resolve, reject) => {
             this.db.get(query, params, (error, row) => {
-                if(error) reject(error)
-                else resolve(!row? null : row.user_id)
+                if(error) {reject(error); return}
+                if (!row) {resolve(null); return}
+                if (isExpired(row.expire_time)) {
+                    self.deleteToken(row.token)
+                    resolve(false)
+                }
+                resolve(row.user_id)
             });
         })
     }

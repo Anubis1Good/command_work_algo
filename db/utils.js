@@ -5,3 +5,9 @@ export async function hashPassword(password) {
             type: argon2.argon2id,
         })
     }
+export function generateExpiryTimeSpan() {
+    return Date.now() + 86400000 * 15 // 15 = amount of days
+}
+export function isExpired(expiry) {
+    return Date.now() > expiry
+}
