@@ -1,14 +1,11 @@
-/*
- * Import and render the app with auth related components
- */
-import React, { createContext, useState } from 'react'
+import React from 'react'
 import ReactDOM from 'react-dom/client'
 import {
   RouterProvider
 } from "react-router-dom"
 import {router} from './Router.jsx'
 import {AuthProvider} from './components/AuthProvider.jsx'
-
+import './index.css';
 
 
 
@@ -21,7 +18,7 @@ function App() {
     <React.StrictMode>
       
       <AuthProvider>
-      <RouterProvider router={router} />
+      <RouterProvider router={router}/>
       </AuthProvider>  
   </React.StrictMode>
   );

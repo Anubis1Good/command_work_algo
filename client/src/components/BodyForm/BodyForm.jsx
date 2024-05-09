@@ -1,18 +1,18 @@
-import {useRef, useState } from 'react'
+import {useContext, useRef, useState } from 'react'
 import { registerUser } from '../../utils/queries/register'
 import { useNavigate } from 'react-router-dom';
 
+import { AuthContext } from '../AuthProvider';
 
 export default function BodyForm({
   children,
   resource,
   method = 'post',
-  contentType = 'application/json',
-  applyCookies = true,
+  contentType = 'application/json'
 }) {
   const formRef = useRef(null);
   const [formData, setFormData] = useState({});
-
+  const [isAuthenticated,setIsAuthenticated] = useContext(AuthContext);
   
   const navigate = useNavigate();
 
@@ -26,7 +26,11 @@ export default function BodyForm({
     });
 
 
-    registerUser(event,formRef,setFormData,resource,method,contentType,applyCookies);
+    const ok = registerUser(event,formRef,setFormData,resource,method,contentType);
+
+    if (ok) {
+      setIsAuthenticated(true);
+    }
     event.currentTarget.reset();
 
     navigate('/');
