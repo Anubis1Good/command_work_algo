@@ -1,5 +1,3 @@
-
-
 import styles from "./RegisterPage.module.css"
 import Header from "../../components/Header/Header"
 import BodyForm from "../../components/BodyForm/BodyForm"
