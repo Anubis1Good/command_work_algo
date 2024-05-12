@@ -1,45 +1,35 @@
-import {useContext, useRef, useState } from 'react'
-import { registerUser } from '../../utils/queries/register'
+import {useCallback, useContext, useRef, useState } from 'react'
+import { registerUser } from '../../utils/queries/authenticate'
 import { useNavigate } from 'react-router-dom';
 
 import { AuthContext } from '../AuthProvider';
 
 export default function BodyForm({
   children,
-  resource,
-  method = 'post',
-  contentType = 'application/json'
+  onSubmit,
+  navigateTo = '/',
+
 }) {
   const formRef = useRef(null);
-  const [formData, setFormData] = useState({});
-  const [isAuthenticated,setIsAuthenticated] = useContext(AuthContext);
-  
+
+  const onSubmitHandler = useCallback(onSubmit);
   const navigate = useNavigate();
 
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     const formDataObject = new FormData(event.currentTarget);
-    setFormData({
-      ...formData,
-      ...Object.fromEntries(Object.entries(formDataObject)),
-    });
+    const formData = Object.fromEntries(formDataObject.entries());
+    onSubmitHandler(event,formData);
 
-
-    const ok = registerUser(event,formRef,setFormData,resource,method,contentType);
-
-    if (ok) {
-      setIsAuthenticated(true);
-    }
     event.currentTarget.reset();
 
-    navigate('/');
+    !!navigateTo && navigate(navigateTo);
   };
 
   return (
     <form ref={formRef} onSubmit={handleSubmit}>
       {children}
-      <pre>{JSON.stringify(formData, null, 2)}</pre>
     </form>
   );
 }

@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { main } from "../controllers/main.js";
 import { createUser, loginUser, logoutUser, changePassword, deleteUser, isAuthenticated } from "../controllers/users.js";
-import {getChats, createChat, getMembers, joinChat, leaveChat} from "../controllers/chats.js";
-import { deleteMessage, getMessages, sendMessage } from "../controllers/messages.js";
+import {getJoinedChats,getChat, createChat, getMembers, joinChat, leaveChat} from "../controllers/chats.js";
+import { deleteMessage, getMessages, sendMessage, startMessageESS } from "../controllers/messages.js";
 const router = Router()
 
 
@@ -76,7 +76,7 @@ router.patch('/change_password', changePassword);
 router.delete('/delete_user', deleteUser);
 
 /**
- * @api {get} /chats Get all chats
+ * @api {get} /chats Get all joined chats
  * @apiName GetChats
  * @apiGroup Chats
  *
@@ -84,8 +84,10 @@ router.delete('/delete_user', deleteUser);
  * 
  * @apiSuccess {Object[]} chats Array of chats
  */
-router.get('/chats', getChats);
+router.get('/chats', getJoinedChats);
 
+
+router.get('/chats/:chat_id', getChat);
 /**
  * @api {post} /chats Create chat
  * @apiName PostChats
@@ -146,7 +148,7 @@ router.post('/chats/:chat_id/leave', leaveChat);
  * 
  * @apiSuccess {Number} id Message id
  */
-router.post('/chats/:chat_id/messages', sendMessage);
+router.post('/chats/:chat_id/message', sendMessage);
 
 /**
  * @api {delete} /chats/:chat_id/messages/:message_id Delete message
@@ -159,7 +161,7 @@ router.post('/chats/:chat_id/messages', sendMessage);
  * 
  * @apiSuccess {String} message Message deleted
  */
-router.delete('/chats/:chat_id/messages/:message_id', deleteMessage);
+router.delete('/chats/:chat_id/message/:message_id', deleteMessage);
 
 /**
  * @api {get} /chats/:chat_id/messages Get chat messages
@@ -184,4 +186,5 @@ router.get('/chats/:chat_id/messages', getMessages);
  */
 router.get('/authenticated', isAuthenticated);
 
+router.get("/chats/:chat_id/messages/live", startMessageESS)
 export default router

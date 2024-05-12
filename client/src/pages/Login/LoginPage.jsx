@@ -4,13 +4,19 @@ import Header from "../../components/Header/Header"
 import BodyForm from "../../components/BodyForm/BodyForm"
 
 import { Link } from "react-router-dom";
+import { loginUser } from "../../utils/queries/authenticate";
+import { useContext } from 'react';
+import { AuthContext } from '../../components/AuthProvider';
 export default function () {
+    const [isAuthenticated,setIsAuthenticated] = useContext(AuthContext);
 
 
     return (
         <>
-        <Header/>
-        <BodyForm className={styles.form} resource="/api/v1/login"  >
+        <BodyForm className={styles.form} onSubmit={(event,formData ) => {
+            console.log(formData.username)
+            setIsAuthenticated(loginUser(formData.username,formData.password));
+        }}>
             <label htmlFor="username"> Имя пользователя</label>
             <input type="text" name="username" id="username" />
 

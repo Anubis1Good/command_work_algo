@@ -14,7 +14,7 @@ export default function (){
         signout();
         navigate('/');
     }
-    console.log(isAuthenticated)
+    
     return (
         <div className={styles.header}>
             <Nav/>

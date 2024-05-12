@@ -139,3 +139,21 @@ export const deleteUser = async (req,res) => {
   }
 
 }
+
+export const getUser = async (req, res) => {
+  const user_id = await authenticate(req, res);
+  if (!user_id) {
+    return res.json({ error: 'Not logged in or invalid token' }).status(401);
+  }
+  if (!req.params.user_id) {
+    return res.json({ error: 'Invalid parameters' }).status(400);
+  }
+  try {
+    const user = await users.getUser(req.params.user_id);
+    res.json({ response: user }).status(200);
+  }
+  catch (error) {
+    console.error(error);
+    res.json({ error: 'Internal server error' }).status(500);
+  }
+}

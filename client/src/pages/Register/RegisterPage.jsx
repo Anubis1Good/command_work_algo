@@ -5,10 +5,17 @@ import Header from "../../components/Header/Header"
 import BodyForm from "../../components/BodyForm/BodyForm"
 
 import { Link } from "react-router-dom";
+import { registerUser } from "../../utils/queries/authenticate";
+import { useContext } from 'react';
+import { AuthContext } from '../../components/AuthProvider';
 export default function () {
+
+    const [isAuthenticated,setAuthenticated] = useContext(AuthContext);
     return (
-        <><Header/>
-        <BodyForm className={styles.form} resource="/api/v1/register">
+        <>
+        <BodyForm className={styles.form} resource="/api/v1/register" onSubmit={(event,formData) => {
+            setAuthenticated(registerUser(formData.username,formData.password));
+        }}>
             <label htmlFor="username"> Имя пользователя</label>
             <input type="text" name="username" id="username" />
 

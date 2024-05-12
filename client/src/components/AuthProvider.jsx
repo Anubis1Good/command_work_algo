@@ -11,7 +11,7 @@ export function AuthProvider ({ children }) {
         getIsAuthenticated().then((response) => {
             setIsAuthenticated(response);
         });
-    }, []);
+    },[]);
 
     return (
         <AuthContext.Provider value={[isAuthenticated,setIsAuthenticated]}>
