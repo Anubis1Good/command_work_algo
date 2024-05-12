@@ -2,7 +2,7 @@ import { Router } from "express";
 import { main } from "../controllers/main.js";
 import { createUser, loginUser, logoutUser, changePassword, deleteUser, isAuthenticated } from "../controllers/users.js";
 import {getJoinedChats,getChat, createChat, getMembers, joinChat, leaveChat} from "../controllers/chats.js";
-import { deleteMessage, getMessages, sendMessage, startMessageESS } from "../controllers/messages.js";
+import { deleteMessage, getMessages, sendMessage,  } from "../controllers/messages.js";
 const router = Router()
 
 
@@ -186,5 +186,5 @@ router.get('/chats/:chat_id/messages', getMessages);
  */
 router.get('/authenticated', isAuthenticated);
 
-router.get("/chats/:chat_id/messages/live", startMessageESS)
+// router.get("/chats/:chat_id/messages/live", startMessageESS)
 export default router
