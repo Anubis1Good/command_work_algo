@@ -1,36 +1,35 @@
-import styles from "./BodyForm.module.css"
-import { useRef, useState } from 'react'
-export default function BodyForm({children, resource, method="post",contentType="application/json", applyCookies=true}) {
-  const formRef = useRef(null)
-  const [data, setData] = useState({})
+import {useCallback, useContext, useRef, useState } from 'react'
+import { registerUser } from '../../utils/queries/authenticate'
+import { useNavigate } from 'react-router-dom';
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    const formData = new FormData(formRef.current)
+import { AuthContext } from '../AuthProvider';
 
-    const jsonData = {}
-    formData.forEach((value, key) => {jsonData[key] = value})
+export default function BodyForm({
+  children,
+  onSubmit,
+  navigateTo = '/',
 
-    fetch(resource, {method: method, credentials: 'include',body: JSON.stringify(jsonData),headers: {'Content-Type': contentType}})
-      .then((response) => {
-        if (applyCookies) {
-          const cookies = response.headers.get('Set-Cookie')
-          if (cookies) {
-            cookies.forEach(cookie => document.cookie = cookie);
-          }
-        }
-        return response.json()
-      }
-    )
-      .then((data) => setData(data))
-      .catch((error) => console.error(error))
-  }
+}) {
+  const formRef = useRef(null);
+
+  const onSubmitHandler = useCallback(onSubmit);
+  const navigate = useNavigate();
+
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const formDataObject = new FormData(event.currentTarget);
+    const formData = Object.fromEntries(formDataObject.entries());
+    onSubmitHandler(event,formData);
+
+    event.currentTarget.reset();
+
+    !!navigateTo && navigate(navigateTo);
+  };
 
   return (
-    <form className={styles.div} ref={formRef} onSubmit={handleSubmit}>
+    <form ref={formRef} onSubmit={handleSubmit}>
       {children}
-      <pre>{JSON.stringify(data, null, 2)}</pre>
     </form>
-  )
+  );
 }
-

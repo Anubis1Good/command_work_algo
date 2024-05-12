@@ -17,7 +17,6 @@ export const isAuthenticated = async (req, res) => {
 
 export const createUser = async (req, res) => {
   const { username, password } = req.body;
-  console.log(username, password)
   if (!username || !password) {
     return res.json({ error: 'Invalid parameters' }).status(400);
   }
@@ -27,7 +26,7 @@ export const createUser = async (req, res) => {
   }
 
   const user_id = await authenticate(req, res);
- 
+
   if (user_id != null) {
     return res.json({ error: 'Already logged in' }).status(401);
   }
@@ -42,7 +41,7 @@ export const createUser = async (req, res) => {
     const id = await users.createUser(username, password);
 
     const token = await tokens.createToken(id);
-    res.cookie('auth_token', token).cookie('user_id', id).status(201).send({ response: id });
+    res.cookie('auth_token', token, { maxAge: 86400000 * 15 }).cookie('user_id', id, { maxAge: 86400000 * 15 }).status(201).send({ response: id });
 
   } catch (error) {
     console.error(error);
@@ -51,27 +50,26 @@ export const createUser = async (req, res) => {
 };
 
 export const loginUser = async (req, res) => {
-  const { name, password } = req.body;
-
-  if (!isValidUser(name, password)) {
+  const { username, password } = req.body;
+  if (!isValidUser(username, password)) {
     return res.json({ error: 'Invalid parameters' }).status(400);
   }
 
   const user_id = await authenticate(req, res);
-  console.log(user_id)
+  
   if (user_id != null) {
     return res.json({ error: 'Already logged in' }).status(401);
   }
 
   try {
-    const id = await users.getIdByName(name);
+    const id = await users.getIdByName(username);
     if (!id || !await users.matchesPassword(id, password)) {
       return res.json({ error: 'Invalid credentials' }).status(401);
     }
 
     const token = await tokens.createToken(id);
 
-    res.cookie('auth_token', token).cookie('user_id', id).status(200).send({ response: id });
+    res.cookie('auth_token', token, { maxAge: 86400000 * 15 }).cookie('user_id', id, { maxAge: 86400000 * 15 }).status(201).send({ response: id });
 
 
   } catch (error) {
@@ -87,11 +85,14 @@ export const logoutUser = async (req, res) => {
     return res.json({ error: 'Not logged in or invalid token' }).status(401);
   }
 
-  tokens.deleteToken(req.cookies.auth_token).catch((error) => {
+  try {
+    await tokens.deleteToken(req.cookies.auth_token);
+    res.clearCookie('auth_token').clearCookie('user_id').json({ response: 'Logged out' }).status(200);
+
+  } catch (error) {
     console.error(error);
-    return res.json({ error: 'Internal server error' }).status(500);
-  });
-  res.clearCookie('auth_token').json({ response: 'Logged out' }).status(200);
+    res.json({ error: 'Internal server error' }).status(500);
+  }
 }
 
 export const changePassword = async (req,res) => {
@@ -137,4 +138,22 @@ export const deleteUser = async (req,res) => {
     res.json({ error: 'Internal server error' }).status(500);
   }
 
+}
+
+export const getUser = async (req, res) => {
+  const user_id = await authenticate(req, res);
+  if (!user_id) {
+    return res.json({ error: 'Not logged in or invalid token' }).status(401);
+  }
+  if (!req.params.user_id) {
+    return res.json({ error: 'Invalid parameters' }).status(400);
+  }
+  try {
+    const user = await users.getUser(req.params.user_id);
+    res.json({ response: user }).status(200);
+  }
+  catch (error) {
+    console.error(error);
+    res.json({ error: 'Internal server error' }).status(500);
+  }
 }

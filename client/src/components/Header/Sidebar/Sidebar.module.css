@@ -2,24 +2,19 @@
 .open{
     display: flex;
     flex-direction: column;
-    padding: 0;
     background: linear-gradient(130deg, #ce70d6, #793a9f);
     color: white;
-    height: 100vh;
+    height: auto;
     width: max-content;
     min-width: 150px;
-    overflow-y: hidden;
-    padding-top: 2vh;
-    padding-right: 3vh;
-    padding-left: 1vh;
-    padding-bottom: 2vh;
-    margin: 0;
+    min-height: 100dvh;
     position: relative;
-    top: 0;
-    font-size: large;
+    margin-left: 0;
     border: none;
-    margin: 0;
     row-gap: 1%;
+    position: fixed;
+    box-sizing: content-box;
+    padding-top: 5vh;
 
 }
 .open:modal {

@@ -1,7 +1,7 @@
 import React ,{useEffect, useRef} from 'react'
 import styles from './Sidebar.module.css'
-export default function Sidebar({ isOpen, setOpen, children }) {
 
+export default function Sidebar({ children, isOpen, setOpen }) {
     const ref = useRef(null)
     useEffect(() => {
         if (isOpen) {
