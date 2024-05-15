@@ -1,7 +1,8 @@
+
 import { Router } from "express";
-import { main } from "../controllers/main.js";
-import { createUser, loginUser, logoutUser, changePassword, deleteUser } from "../controllers/users.js";
-import {getChats, createChat, getMembers, joinChat, leaveChat} from "../controllers/chats.js";
+import { main, sse } from "../controllers/main.js";
+import { createUser, loginUser, logoutUser, changePassword, deleteUser, isAuthenticated } from "../controllers/users.js";
+import {getJoinedChats,getChat, createChat, getMembers, joinChat, leaveChat, transferOwnership} from "../controllers/chats.js";
 import { deleteMessage, getMessages, sendMessage } from "../controllers/messages.js";
 const router = Router()
 
@@ -42,15 +43,15 @@ router.post('/register', createUser);
 router.post('/login', loginUser);
 
 /**
- * @api {delete} /logout Logout user
- * @apiName DeleteLogout
+ * @api {post} /logout Logout user
+ * @apiName PostLogout
  * @apiGroup Users
  *
  * @apiHeader {String} Authorization User token
  * 
  * @apiSuccess {String} message Logout success
  */
-router.delete('/logout', logoutUser);
+router.post('/logout', logoutUser);
 
 /**
  * @api {patch} /change_password Change user password
@@ -76,7 +77,7 @@ router.patch('/change_password', changePassword);
 router.delete('/delete_user', deleteUser);
 
 /**
- * @api {get} /chats Get all chats
+ * @api {get} /chats Get all joined chats
  * @apiName GetChats
  * @apiGroup Chats
  *
@@ -84,8 +85,10 @@ router.delete('/delete_user', deleteUser);
  * 
  * @apiSuccess {Object[]} chats Array of chats
  */
-router.get('/chats', getChats);
+router.get('/chats', getJoinedChats);
 
+
+router.get('/chats/:chat_id', getChat);
 /**
  * @api {post} /chats Create chat
  * @apiName PostChats
@@ -146,7 +149,7 @@ router.post('/chats/:chat_id/leave', leaveChat);
  * 
  * @apiSuccess {Number} id Message id
  */
-router.post('/chats/:chat_id/messages', sendMessage);
+router.post('/chats/:chat_id/message', sendMessage);
 
 /**
  * @api {delete} /chats/:chat_id/messages/:message_id Delete message
@@ -159,7 +162,7 @@ router.post('/chats/:chat_id/messages', sendMessage);
  * 
  * @apiSuccess {String} message Message deleted
  */
-router.delete('/chats/:chat_id/messages/:message_id', deleteMessage);
+router.delete('/chats/:chat_id/message/:message_id', deleteMessage);
 
 /**
  * @api {get} /chats/:chat_id/messages Get chat messages
@@ -173,5 +176,21 @@ router.delete('/chats/:chat_id/messages/:message_id', deleteMessage);
  */
 router.get('/chats/:chat_id/messages', getMessages);
 
+/**
+ * @api {get} /authenticated Check if user is authenticated
+ * @apiName GetAuthenticated
+ * @apiGroup Users
+ *
+ * @apiHeader {String} Authorization User token
+ * 
+ * @apiSuccess {Boolean} authenticated User authenticated
+ */
+router.get('/authenticated', isAuthenticated);
+
+router.get('/live/:chat_id', sse);
+
+router.post('/chats/:chat_id/leave', leaveChat);
+
+router.post('chats/:chat_id/transfer', transferOwnership);
 
 export default router

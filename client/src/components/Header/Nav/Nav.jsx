@@ -1,29 +1,42 @@
 import { Link } from "react-router-dom";
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import styles from "./Nav.module.css"
-import { useMediaQuery } from 'react-responsive'
-import Sidebar from "../Sidebar/Sidebar";
 
-export default function() {
-    const isMobile = useMediaQuery({ query: '(max-width: 880px)' })
+import Sidebar from "../Sidebar/Sidebar";
+import { RxHamburgerMenu } from "react-icons/rx";
+import { FiHome, FiLogIn, FiUserPlus, FiInfo, FiHelpCircle} from "react-icons/fi";
+import { CiChat1 } from "react-icons/ci";
+
+import {AuthContext} from '../../AuthProvider';
+
+export function Nav() {
 
     const [isOpen, setIsOpen] = useState(false)
-    const toggleNav = () => {setIsOpen(!isOpen)
-    }
+    const toggleNav = () => {setIsOpen(!isOpen)}
 
-
+    const [isAuthenticated, setIsAuthenticated] = useContext(AuthContext);
     return (
-        isMobile ?<>
-                <button onClick={toggleNav}>Menu</button>
-                <Sidebar isOpen={isOpen} onToggle={toggleNav}/></>
-        :
-            <div className={isMobile ? styles.linksMobile : styles.links}>
-                <Link to="/">Главная</Link>
-                <Link to="/login">Вход</Link>
-                <Link to="/register">Регистрация</Link>
-                <Link to="/about">О проекте</Link>
-                <Link to="/contacts">Контакты</Link>
-            </div>
+        <>
+        <Sidebar isOpen={isOpen} setOpen={setIsOpen}>
+                <Link to="/"><FiHome/>Главная</Link>
+
+                {!isAuthenticated ?
+                  <>
+                    <Link to="/login"><FiLogIn/>Вход</Link> 
+                    <Link to="/register"><FiUserPlus/>Регистрация</Link>
+                  </> 
+                  : 
+                  <>
+                    <Link to="/chat"><CiChat1/>Чат</Link>
+                  </>
+                  }
+
+                <Link to="/about"><FiInfo/>О проекте</Link>
+                <Link to="/contacts"><FiHelpCircle/>Контакты</Link>
+
+        </Sidebar>
+        <button className={styles.burger} onClick={toggleNav}><RxHamburgerMenu/></button>
+        </>
 
       );
 }

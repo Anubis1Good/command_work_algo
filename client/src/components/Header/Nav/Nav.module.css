@@ -1,19 +1,20 @@
-.links {
-    justify-content: space-evenly;
-}
-
-@media (max-width: 880px) {
-    .links {
-        justify-content: flex-end;
-    }
-}
-
-
-.links > a {
-    text-decoration: none;
+.burger {
+    background: rgba(0,0,0,0);
+    border: none;
     color: white;
-    font-size: large;
+    font-size: 3.5vh;
+    cursor: pointer;
+    margin: 0;
+    padding: 0;
+    line-height: 0;
+
 }
-.links > a:hover {
-    color: #c8adec;
+.burger:focus {
+    outline: none;
+}
+.burger:active {
+    transform: scale(0.9);
+}
+.burger:hover {
+    color:  rgba(255,255,255,0.5);
 }

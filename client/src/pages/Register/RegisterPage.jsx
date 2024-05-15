@@ -1,35 +1,29 @@
-import { useRef } from "react"
-import { fetchRegistration } from "../../utils/queries/registration"
-import Header from "../../components/Header/Header"
 import styles from "./RegisterPage.module.css"
+import Header from "../../components/Header/Header"
+import BodyForm from "../../components/BodyForm/BodyForm"
 
+import { Link } from "react-router-dom";
+import { registerUser } from "../../utils/queries/authenticate";
+import { useContext } from 'react';
+import { AuthContext } from '../../components/AuthProvider';
 export default function () {
-    const registrationForm = useRef()
-    async function formSend(e){
-        e.preventDefault()
-        const {username, password} = registrationForm.current
-        try{
-         let response = await fetchRegistration(username.value, password.value)
-         console.log(response.body)
-        }
-        catch(error){
-            console.error(error)
-        }
-        registrationForm.current.reset()
-    }
+
+    const [isAuthenticated,setAuthenticated] = useContext(AuthContext);
     return (
         <>
-        <Header/>
+        <BodyForm className={styles.form} resource="/api/v1/register" onSubmit={(event,formData) => {
+            setAuthenticated(registerUser(formData.username,formData.password));
+        }}>
+            <h1>Регистрация</h1>
+            <label htmlFor="username"> Имя пользователя</label>
+            <input className={styles.login} type="text" name="username" id="username" />
 
-        <form onSubmit={(e)=>formSend(e)} ref={registrationForm} className={styles.form}>
-            <label htmlFor="username"> Username</label>
-            <input type="text" name="username" id="username" />
+            <label htmlFor="password"> Пароль</label>
+            <input className={styles.password} type="password" name="password" id="password" />
 
-            <label htmlFor="password"> Password</label>
-            <input type="password" name="password" id="password" />
-
-            <input type="submit" value="Register" />
-        </form>
+            <button className={styles.submit} type="submit">Зарегистрироваться</button>
+        <p>Есть аккаунт? <Link to="/login">Вход</Link></p>
+        </BodyForm>
         </>
     )
 

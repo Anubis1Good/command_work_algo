@@ -1,16 +1,21 @@
-import React, { useState } from 'react'
+import React ,{useEffect, useRef} from 'react'
 import styles from './Sidebar.module.css'
 
-export default function Sidebar({ isOpen, onToggle }) {
-
-
+export default function Sidebar({ children, isOpen, setOpen }) {
+    const ref = useRef(null)
+    useEffect(() => {
+        if (isOpen) {
+            ref.current.showModal()
+        }
+        else {
+            ref.current.close()
+        }
+    }, [isOpen])
 
     return (
-        <div className={`${styles.sidebar} ${isOpen ? styles.open : ''}`}>
-            <div className={styles.overlay} onClick={onToggle}></div>
-            <div className={styles.sidebarContent}>
-                <h3>Sidebar content</h3>
-            </div>
-        </div>
+        <dialog ref ={ref} onMouseDown={(e) => {e.target === ref.current && setOpen(false)}} className={isOpen ? styles.open : styles.closed}>
+            {children}
+        </dialog>
     )
 }
+
