@@ -1,9 +1,14 @@
 
 import { useEffect, useRef, useState } from 'react';
-import { getJoinedChats,getChatMessages, joinChat, createChat, getChat } from "../../utils/queries/chats";
+import { getJoinedChats,getChatMessages, getChat } from "../../utils/queries/chats";
 import BodyForm from '../../components/BodyForm/BodyForm';
 import styles from './ChatPage.module.css';
 import { sendMessage } from '../../utils/queries/messages';
+import CreateDialog from './Dialogs/CreateDialog';
+import JoinDialog from './Dialogs/JoinDialog';
+import ChatStack from './ChatStack';
+import ChatHeader from './СhatHeader';
+import Messages from './Messages';
 
 export default function () {
 
@@ -11,12 +16,18 @@ export default function () {
     const [chats, setChats] = useState([]);
     const [currentChat, setCurrentChat] = useState({});
 
+    
     function renderMessages() {
-        return messages ? messages.map(message => (
-            <div key={message.id} className="message">
-                <p>{message.message}, от {currentChat.members.find(member => member.id === message.sender_id).username}</p>
-            </div>
-        )): <p>Нет сообщений</p>
+        return !!messages.length ? messages.map((message) => {
+            return (
+                <div key={message.id} className={styles.message}>
+                    <div className={styles.messageContent}>{message.message}</div>
+                    <div className={styles.messageTime}>{new Date(message.send_time).toLocaleString()}</div>
+                    <div className={styles.messageAuthor}>{ getAuthorName(message.sender_id)}</div>
+
+                </div>
+            )
+        }) : <p>Нет сообщений</p>
     }
     
     useEffect(() => {
@@ -27,12 +38,46 @@ export default function () {
 
     useEffect(() => {
         if (currentChat.id) {
-        const eventSource = new EventSource('/api/v1/chats/'+currentChat.id+'/messages/live');
+        const eventSource = new EventSource('/api/v1/live/' + currentChat.id);
+
+        eventSource.addEventListener('onSendMessage', (event) => {
+          const message = JSON.parse(event.data);
+          setMessages(messages => [...messages, message]);
+        });
+        eventSource.addEventListener('onDeleteMessage', (event) => {
+          const message_id = JSON.parse(event.data).message_id;
+          setMessages(messages => messages.filter(message => message.id !== message_id));
+        });
     
-        eventSource.onmessage = (event) => {
-          const newMessage = JSON.parse(event.data);
-          setMessages((prevMessages) => [...prevMessages, newMessage]);
+        eventSource.addEventListener('onJoinChat', (event) => {
+          const user = JSON.parse(event.data);
+          currentChat.members.push(user);
+        });
+    
+        eventSource.addEventListener('onLeaveChat', (event) => {
+          const user = JSON.parse(event.data);
+          currentChat.members = currentChat.members.filter(member => member.id !== user.id);
+        });
+
+        eventSource.addEventListener('onILeaveChat', (event) => {
+          const chat = JSON.parse(event.data);
+          setChats(chats => chats.filter(ch => ch.id !== chat.id));
+          if (chat.id === currentChat.id) {
+            setCurrentChat({});
+            setMessages([]);
+            eventSource.close();
+          }
+        });
+
+        eventSource.addEventListener("onIJoinChat", (event) => {
+          const chat = JSON.parse(event.data);
+          setChats(chats => [...chats, chat]);
+        });
+
+        eventSource.onerror = (event) => {
+          eventSource.close();
         };
+        
     
         return () => {
           eventSource.close();
@@ -49,57 +94,18 @@ export default function () {
             });
         }
     }, [currentChat]);
-    function renderChats() {
-        return chats ? chats.map(chat => (
-            <div key={chat.id} onClick={() => {getChat(chat.id).then((response) => setCurrentChat(response))}}>{chat.name}</div>
-        )) : <p>Нет чатов</p>
-        }
+
     
-    const dialogRef = useRef(null);
-    const joindialogRef = useRef(null);
+
     return (<>
-    <button className={styles.create_button} onClick={() => {dialogRef.current.showModal();}}>Создать чат</button>
-
-    <dialog className={styles.create_dialog} ref={dialogRef}>
-
-        <button onClick={() => dialogRef.current.close()}>Закрыть</button>
-
-        <BodyForm resource={'/api/v1/chats'} style={styles.create_form} method='POST' navigateTo='' onSubmit={
-            (event,formData ) => {
-                createChat(formData.name); 
-                dialogRef.current.close();
-            }
-            }
-            >
-            <input type="text" name="name" placeholder="Название чата" />
-            <input type="submit" value="Создать" />
-        </BodyForm>
-
-    </dialog>
-
-    <button className={styles.join_button} onClick={() => { joindialogRef.current.showModal();}}>Присоединиться к чату</button>
-
-    <dialog className={styles.join_dialog} ref={joindialogRef}>
-
-        <button onClick={() => joindialogRef.current.close()}>Закрыть</button>
-
-        <BodyForm  navigateTo='' onSubmit={
-            (event,formData ) => {
-                joinChat(formData.id); 
-                joindialogRef.current.close();}}>
-            <input type="text" name="id" placeholder="ID чата" />
-            <input type="submit" value="Присоединиться" />
-        </BodyForm>
-
-    </dialog>
-
+    <CreateDialog />
+    <JoinDialog />
     <div className={ styles.chat }>
-        <div className={styles.chat_list}>
-            {renderChats()}
-        </div>
-        <div className={styles.messages}>
-            {renderMessages()}
-        </div>
+        <ChatStack chats={chats} setCurrentChat={setCurrentChat} className={styles.chats}/>
+        <div className={styles.wrapper}>
+
+           <ChatHeader/>
+            <Messages messages={messages} currentChat={currentChat} />
 
         <BodyForm style={styles.send} navigateTo='' onSubmit={(event,formData ) => {
                 sendMessage(currentChat.id,formData.message);
@@ -108,6 +114,9 @@ export default function () {
             <input type="text" name="message" placeholder="Текст сообщения" />
             <input type="submit" value="Отправить" />
         </BodyForm>
-        </div></>
+        </div>
+        </div>
+        </>
     )
 }
+

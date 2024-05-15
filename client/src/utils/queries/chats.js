@@ -49,3 +49,34 @@ export const createChat = async (name) => {
     return data.response;
 }
 
+export const leaveChat = async (chatId) => {
+    const response = await fetch(`/api/v1/chats/${chatId}/leave`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        }});
+    const data = await response.json();
+    return data.response;
+}
+
+export const deleteChat = async (chatId) => {
+    const response = await fetch(`/api/v1/chats/${chatId}`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+        }});
+    const data = await response.json();
+    return data.response;
+}
+export const transferOwnership = async (chatId, userId) => {
+    const response = await fetch(`/api/v1/chats/${chatId}/transfer`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({user_id: userId})
+    });
+    const data = await response.json();
+    return data.response;
+}
+
