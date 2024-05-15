@@ -90,6 +90,15 @@ class ChatsDB{
         });
     }
 
+    async transferOwnership(chat_id, new_owner_id) {
+        const query = "UPDATE chats SET owner_id = ? WHERE id = ?";
+        const params = [new_owner_id, chat_id];
+
+        return new Promise((resolve, reject) => {
+            this.db.run(query, params, (error) => {error? reject(error) : resolve()});
+        });
+    }
+    
 
     async deleteChat(id) {
         const query = "DELETE FROM chats WHERE id = ?";
@@ -99,7 +108,15 @@ class ChatsDB{
             this.db.run(query, params, (error) => {error? reject(error) : resolve()});
         });
     }
+    
+    async isOwner(chat_id, user_id) {
+        const query = "SELECT * FROM chats WHERE id = ? AND owner_id = ?";
+        const params = [chat_id, user_id];
 
+        return new Promise((resolve, reject) => {
+            this.db.get(query, params, (error, row) => {error? reject(error) : resolve(!!row)});
+        });
+    }
     async addMember(chat_id, user_id) {
         const query = "INSERT INTO chat_members (chat_id, user_id) VALUES (?, ?)";
         const params = [chat_id, user_id];
@@ -206,7 +223,7 @@ class MessagesDB {
 
     async deleteMessage(chat_id,message_id) {
         const query = "DELETE FROM messages WHERE id = ? AND chat_id = ?";
-        const params = [id, chat_id];
+        const params = [message_id, chat_id];
 
         return new Promise((resolve, reject) => {
             this.db.run(query, params, (error) => {error? reject(error) : resolve()});

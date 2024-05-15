@@ -1,23 +1,179 @@
 .chat {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     height: 100%;
     width: 100%;
+    overflow: visible;
 }
-.chat_messages {
-    height: 100%;
-    width: 100%;
+
+.chat-header {
+    flex-shrink: 0;
+    width: 250px;
+    background: linear-gradient(130deg, #ce70d6, #793a9f);
+    color: white;
+    padding: 10px;
+}
+
+.chat-header > h1 {
+    font-size: large;
+    margin: 0;
+}
+
+.chat-header > button {
+    background-color: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+.chat-header > button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.chat-body {
+    flex-grow: 1;
     overflow-y: scroll;
+}
+
+.chat-body > .messages {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    padding: 1rem;
+    padding: 10px;
 }
-.chat_list {
-    width: min-content;
-    overflow-y: scroll;
+
+.chat-body > .messages > .message {
+    margin-bottom: 5px;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+.chat-body > .messages > .message > .text {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.chat-body > .messages > .message > .avatar {
+    margin-right: 10px;
+}
+
+.chat-body > .messages > .message > .avatar > img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.chat-body > .chats {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    padding: 1rem;
+    padding: 10px;
 }
+
+.chat-body > .chats > .chat-item {
+    margin-bottom: 5px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    cursor: pointer;
+}
+
+.chat-body > .chats > .chat-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.chat-body > .chats > .chat-item > .avatar {
+    margin-right: 10px;
+}
+
+.chat-body > .chats > .chat-item > .avatar > img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.chat-body > .chats > .chat-item > .name {
+    flex-grow: 1;
+}
+
+.chat-input {
+    flex-shrink: 0;
+    padding: 10px;
+}
+
+.chat-input > form {
+    display: flex;
+    flex-direction: row;
+}
+
+.chat-input > form > input {
+    flex-grow: 1;
+}
+
+.chat-input > form > button {
+    background-color: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+.chat-input > form > button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Width of the scrollbar */
+::-webkit-scrollbar {
+    width: 12px;
+  }
+  
+  /* Track of the scrollbar */
+  ::-webkit-scrollbar-track {
+    background: #f0f0f0;
+  }
+  
+  /* Thumb of the scrollbar */
+  ::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 10px;
+  }
+  
+  /* Hover effect on the thumb */
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #aaa;
+  }
+  
+  /* For Firefox */
+  ::-moz-scrollbar {
+    width: 12px;
+  }
+  
+  ::-moz-scrollbar-track {
+    background: #f0f0f0;
+  }
+  
+  ::-moz-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 10px;
+  }
+  
+  ::-moz-scrollbar-thumb:hover {
+    background-color: #aaa;
+  }
+  
+  /* For Edge */
+  ::-ms-scrollbar {
+    width: 12px;
+  }
+  
+  ::-ms-scrollbar-track {
+    background: #f0f0f0;
+  }
+  
+  ::-ms-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 10px;
+  }
+  
+  ::-ms-scrollbar-thumb:hover {
+    background-color: #aaa;
+  }

@@ -48,7 +48,7 @@ export const sendMessage = async (req, res) => {
         
         let message_id = await messages.createMessage(req.params.chat_id, user_id, req.body.message);
 
-        emitter.emit("onSendMessage", message_id);
+        emitter.emit("onSendMessage", message_id, req.params.chat_id);
         res.json({ response: 'Message sent' }).status(200);
 
     } catch (error) {
@@ -73,8 +73,12 @@ export const deleteMessage = async (req, res) => {
             return res.json({ error: 'Not a member of this chat' }).status(403);
         }
         
+        if (! await messages.getMessage(req.params.message_id)) {
+            return res.json({ error: 'Message not found' }).status(404);
+        }
         await messages.deleteMessage(req.params.chat_id, req.params.message_id);
 
+        emitter.emit("onDeleteMessage", req.params.message_id, req.params.chat_id);
         res.json({ response: 'Message deleted' }).status(200);
 
     } catch (error) {
@@ -83,3 +87,4 @@ export const deleteMessage = async (req, res) => {
     }
 
 }
+

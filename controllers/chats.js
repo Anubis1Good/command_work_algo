@@ -1,4 +1,5 @@
 import {chats, tokens, users} from '../db/controller.js'
+import { emitter } from './main.js';
 import {authenticate} from './utils.js'
 
 
@@ -106,6 +107,7 @@ export const joinChat = async (req, res) => {
 
         await chats.addMember(req.params.chat_id,user_id);
 
+        emitter.emit("onJoinChat", req.params.chat_id, user_id);
         res.json({ response: 'Joined chat' }).status(200);
 
     } catch (error) {
@@ -128,7 +130,7 @@ export const leaveChat = async (req,res) => {
             return res.json({ error: 'Not a member of this chat' }).status(403);
         }
         await chats.deleteMember(req.params.chat_id,user_id);
-
+        emitter.emit("onLeaveChat", req.params.chat_id, user_id);
         res.json({ response: 'Left chat' }).status(200);
 
     } catch (error) {
@@ -136,4 +138,47 @@ export const leaveChat = async (req,res) => {
         res.json({ error: 'Internal server error' }).status(500);
     }
 
+}
+
+export const deleteChat = async (req, res) => {
+    const user_id = await authenticate(req, res);
+    if (!user_id) {
+        return res.json({ error: 'Not logged in or invalid token' }).status(401);
+    }
+    if (!req.params.chat_id) {
+        return res.json({ error: 'Invalid parameters' }).status(400);
+    }
+    try {
+        if (!await members.isOwner(user_id, req.params.chat_id)) {
+            return res.json({ error: 'Not the owner of this chat' }).status(403);
+        }
+        await chats.deleteChat(req.params.chat_id);
+        emitter.emit("onDeleteChat", req.params.chat_id);
+        res.json({ response: 'Deleted chat' }).status(200);
+
+    } catch (error) {
+        console.error(error);
+        res.json({ error: 'Internal server error' }).status(500);
+    }
+}
+
+export const transferOwnership = async (req, res) => {
+    const user_id = await authenticate(req, res);
+    if (!user_id) {
+        return res.json({ error: 'Not logged in or invalid token' }).status(401);
+    }
+    if (!req.params.chat_id) {
+        return res.json({ error: 'Invalid parameters' }).status(400);
+    }
+    try {
+        if (!await members.isOwner(user_id, req.params.chat_id)) {
+            return res.json({ error: 'Not the owner of this chat' }).status(403);
+        }
+        await chats.transferOwnership(req.params.chat_id, req.body.user_id);
+        res.json({ response: 'Transferred ownership' }).status(200);
+
+    } catch (error) {
+        console.error(error);
+        res.json({ error: 'Internal server error' }).status(500);
+    }
 }
