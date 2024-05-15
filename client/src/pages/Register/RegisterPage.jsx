@@ -14,15 +14,16 @@ export default function () {
         <BodyForm className={styles.form} resource="/api/v1/register" onSubmit={(event,formData) => {
             setAuthenticated(registerUser(formData.username,formData.password));
         }}>
+            <h1>Регистрация</h1>
             <label htmlFor="username"> Имя пользователя</label>
-            <input type="text" name="username" id="username" />
+            <input className={styles.login} type="text" name="username" id="username" />
 
             <label htmlFor="password"> Пароль</label>
-            <input type="password" name="password" id="password" />
+            <input className={styles.password} type="password" name="password" id="password" />
 
-            <button type="submit">Зарегистрироваться</button>
-        </BodyForm>
+            <button className={styles.submit} type="submit">Зарегистрироваться</button>
         <p>Есть аккаунт? <Link to="/login">Вход</Link></p>
+        </BodyForm>
         </>
     )
 
