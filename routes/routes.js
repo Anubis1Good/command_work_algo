@@ -1,3 +1,4 @@
+
 import { Router } from "express";
 import { main, sse } from "../controllers/main.js";
 import { createUser, loginUser, logoutUser, changePassword, deleteUser, isAuthenticated } from "../controllers/users.js";
@@ -191,4 +192,5 @@ router.get('/live/:chat_id', sse);
 router.post('/chats/:chat_id/leave', leaveChat);
 
 router.post('chats/:chat_id/transfer', transferOwnership);
+
 export default router
