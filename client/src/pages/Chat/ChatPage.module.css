@@ -5,7 +5,7 @@
     height: 100%;
     color:white;
     overflow: hidden;
-    background: linear-gradient(130deg, #ce70d6, #793a9f);  /* fallback for old browsers */
+    background: linear-gradient(90deg, #ce70d6, #793a9f);  /* fallback for old browsers */
 }
 .wrapper {
     display: flex;
