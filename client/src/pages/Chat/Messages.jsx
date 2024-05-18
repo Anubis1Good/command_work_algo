@@ -16,7 +16,7 @@ export default function(props) {
     }
 
     useEffect(() => {
-        if (messagesRef.current && !(messagesRef.current.scrollHeight - messagesRef.current.scrollTop === messagesRef.current.clientHeight)) {
+        if (messagesRef.current && !(messagesRef.current.scrollHeight - messagesRef.current.scrollTop === messagesRef.current.clientHeight)) { // If not scrolled to the bottom
           messagesRef.current.scrollTo({
             top: messagesRef.current.scrollHeight,
             behavior: 'smooth'
