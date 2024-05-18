@@ -22,8 +22,8 @@ export default function (props) {
             
             {isDropdownOpen ?
             <div className={styles.chatHeaderDropdown}>
-                <div className={styles.chatHeaderDropdownItem} onClick={() => leaveChat(props.currentChat.id)}>Покинуть чат</div>
-                {props.currentChat.owner_id === props.user.id ? <div className={styles.chatHeaderDropdownItem} onClick={() => deleteChat(props.currentChat.id)}>Удалить чат</div> : null}
+                <div className={styles.chatHeaderDropdownItem} onClick={() => {leaveChat(props.currentChat.id);setIsDropdownOpen(false)}}>Покинуть чат</div>
+                {props.currentChat.owner_id === props.user.id ? <div className={styles.chatHeaderDropdownItem} onClick={() => {deleteChat(props.currentChat.id);setIsDropdownOpen(false)}}>Удалить чат</div> : null}
             </div>
             
             : null}

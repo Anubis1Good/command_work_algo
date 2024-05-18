@@ -57,13 +57,7 @@
 
 }
 
-.chatHeaderDropdownItem:hover {
-    background-color: rgba(0, 0, 0, 0.3);
-}
 
-.chatHeaderDropdownItem:active {
-    background-color: rgba(0, 0, 0, 0.5);
-}
 
 .chatHeaderDropdownItem {
 

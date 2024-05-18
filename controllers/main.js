@@ -20,6 +20,7 @@ export const sse= async (req, res) => {
         'X-Accel-Buffering': 'no'
     });
     users[user_id] = {res:res, chat_id:req.params.chat_id};
+    console.log(users)
     res.on('close', () => {
         delete users[user_id];
     })
@@ -49,6 +50,7 @@ emitter.on("onLeaveChat", async (chat_id, user_id) => { // user_id = the id of t
         let chat = await chats.getChat(chat_id);
         for (let member of members) {
             if (member.id == user_id && users[user_id]) { // event only for the user who left
+                console.log("onILeaveChat")
                 users[user_id].res.write("event: onILeaveChat\n");
                 users[user_id].res.write(`data: ${JSON.stringify(chat)}\n\n`);
                 break;
@@ -63,10 +65,9 @@ emitter.on("onLeaveChat", async (chat_id, user_id) => { // user_id = the id of t
     }
 })
 
-emitter.on("onMessageDelete", async (message_id, chat_id) => {
+emitter.on("onDeleteMessage", async (message, chat) => {
     try {
-        let members = await chats.getMembersFromChat(chat_id);
-        let message = await messages.getMessage(message_id);
+        let members = await chats.getMembersFromChat(chat.id);
         for (let member of members) {
             if (users[member.id]) {
                 users[member.id].res.write("event: onMessageDelete\n");
@@ -76,6 +77,7 @@ emitter.on("onMessageDelete", async (message_id, chat_id) => {
     } catch (error) {
         console.error(error);
     }
+    await messages.deleteMessage(chat.id,message.id);
 })
 
 emitter.on("onJoinChat", async (chat_id, user_id) => { // user_id = the id of the user who joined

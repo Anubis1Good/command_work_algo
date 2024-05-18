@@ -28,6 +28,9 @@ export default function () {
         if (joinedChats.length > 0) {
           setCurrentChat(await getChat(joinedChats[0].id));
         }
+        else {
+          setCurrentChat({id:-1,name:"Нет чатов", members:[], owner_id:0, create_time:0});
+        }
       }
       fetchData();
     },[]);
@@ -40,8 +43,9 @@ export default function () {
           const message = JSON.parse(event.data);
           setMessages(messages => [...messages, message]);
         });
-        eventSource.addEventListener('onDeleteMessage', (event) => {
-          const message_id = JSON.parse(event.data).message_id;
+        eventSource.addEventListener('onMessageDelete', (event) => {
+          console.log(event.data)
+          const message_id = JSON.parse(event.data).id;
           setMessages(messages => messages.filter(message => message.id !== message_id));
         });
     
@@ -78,6 +82,9 @@ export default function () {
           eventSource.close();
         };
     }
+    else {
+      setCurrentChat({id:-1,name:"Нет чатов", members:[], owner_id:0, create_time:0});
+    }
       }, [currentChat]);
     
 
@@ -93,7 +100,12 @@ export default function () {
        function renderChat () {
       return !!chats && (
         <div className={ styles.chat }>
-          <ChatStack chats={chats} setCurrentChat={setCurrentChat} className={styles.chats}/>
+          <ChatStack chats={chats} setCurrentChat={setCurrentChat} className={styles.chats}>
+            <div className={styles.dialogsWrapper}>
+            <CreateDialog />
+            <JoinDialog />
+            </div>
+          </ChatStack>
           <div className={styles.wrapper}>
             <ChatHeader user={user} currentChat={currentChat}/>
             <Messages messages={messages} currentChat={currentChat}  user={user} />
@@ -108,8 +120,7 @@ export default function () {
     }
 
     return (<>
-    <CreateDialog />
-    <JoinDialog />
+
     {renderChat()}
 
         </>

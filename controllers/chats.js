@@ -106,6 +106,9 @@ export const joinChat = async (req, res) => {
             return res.json({ error: 'Already a member of this chat' }).status(403);
         }
 
+        if (!await chats.exists(req.params.chat_id)) {
+            return res.json({ error: 'Chat doesnt exist you idiot sandwitch' }).status(404);
+        }
         await chats.addMember(req.params.chat_id,user_id);
 
         emitter.emit("onJoinChat", req.params.chat_id, user_id);
@@ -130,8 +133,9 @@ export const leaveChat = async (req,res) => {
         if (!await chats.isUserinChat(user_id, req.params.chat_id)) {
             return res.json({ error: 'Not a member of this chat' }).status(403);
         }
-        await chats.deleteMember(req.params.chat_id,user_id);
         emitter.emit("onLeaveChat", req.params.chat_id, user_id);
+        await chats.deleteMember(req.params.chat_id,user_id);
+
         res.json({ response: 'Left chat' }).status(200);
 
     } catch (error) {

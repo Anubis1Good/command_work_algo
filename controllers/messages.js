@@ -76,9 +76,13 @@ export const deleteMessage = async (req, res) => {
         if (! await messages.getMessage(req.params.message_id)) {
             return res.json({ error: 'Message not found' }).status(404);
         }
-        await messages.deleteMessage(req.params.chat_id, req.params.message_id);
+        const message = await messages.getMessage(req.params.message_id);
+        if (message.user_id !== user_id && !(await chats.isOwner( req.params.chat_id, user_id))) {
+            return res.json({ error: 'Not allowed to delete this message' }).status(403);
+        }
 
-        emitter.emit("onDeleteMessage", req.params.message_id, req.params.chat_id);
+
+        emitter.emit("onDeleteMessage", await messages.getMessage(req.params.message_id), await chats.getChat(req.params.chat_id));
         res.json({ response: 'Message deleted' }).status(200);
 
     } catch (error) {

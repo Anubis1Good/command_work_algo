@@ -16,6 +16,7 @@ export default function(props) {
         }
     return (
         <div className={style.chats}>
+            {props.children}
             {renderChats()}
         </div>
     )

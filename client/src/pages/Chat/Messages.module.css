@@ -20,10 +20,14 @@
     align-items: start;
     flex-direction: column;
     background:  rgba(0, 0, 0, 0.1);
-    padding: 1rem;
+    padding-left : 1rem;
+    padding-right : 1rem;
+    padding-top : 0.5rem;
+    padding-bottom : 0.5rem;
     border-radius: 10px;
     height:  auto;
     margin-right: 2rem;
+    position: relative;
 }
 .messageOwn {
     align-self: flex-end;
@@ -53,4 +57,19 @@
     color: #fff;
 
     flex-direction: row;
+}
+.messageDropdown {
+    display: flex;
+
+
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+
+    position: absolute;
+    z-index: 1;
+    backdrop-filter: blur(10px);
+    background-color: rgba(0, 0, 0, 0.15);
+    border-radius: 1rem;
 }
