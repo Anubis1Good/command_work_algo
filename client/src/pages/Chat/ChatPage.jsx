@@ -1,6 +1,6 @@
 
-import { useEffect, useRef, useState } from 'react';
-import { getJoinedChats,getChatMessages, getChat } from "../../utils/queries/chats";
+import { useContext, useEffect, useState } from 'react';
+import { getJoinedChats,getChatMessages,getChat } from "../../utils/queries/chats";
 import BodyForm from '../../components/BodyForm/BodyForm';
 import styles from './ChatPage.module.css';
 import { sendMessage } from '../../utils/queries/messages';
@@ -10,30 +10,26 @@ import ChatStack from './ChatStack';
 import ChatHeader from './СhatHeader';
 import Messages from './Messages';
 
+import { AuthContext } from '../../components/AuthProvider';
+import { IoSend } from 'react-icons/io5';
+
 export default function () {
 
     const [messages, setMessages] = useState([]);
     const [chats, setChats] = useState([]);
     const [currentChat, setCurrentChat] = useState({});
+    const [authenticated, setIsAuthenticated,user,setUser] = useContext(AuthContext);
 
-    
-    function renderMessages() {
-        return !!messages.length ? messages.map((message) => {
-            return (
-                <div key={message.id} className={styles.message}>
-                    <div className={styles.messageContent}>{message.message}</div>
-                    <div className={styles.messageTime}>{new Date(message.send_time).toLocaleString()}</div>
-                    <div className={styles.messageAuthor}>{ getAuthorName(message.sender_id)}</div>
 
-                </div>
-            )
-        }) : <p>Нет сообщений</p>
-    }
-    
     useEffect(() => {
-        getJoinedChats().then((response) => {
-            setChats(response);
-        });
+      async function fetchData() {
+        const joinedChats = await getJoinedChats();
+        setChats(joinedChats);
+        if (joinedChats.length > 0) {
+          setCurrentChat(await getChat(joinedChats[0].id));
+        }
+      }
+      fetchData();
     },[]);
 
     useEffect(() => {
@@ -65,7 +61,6 @@ export default function () {
           if (chat.id === currentChat.id) {
             setCurrentChat({});
             setMessages([]);
-            eventSource.close();
           }
         });
 
@@ -95,27 +90,28 @@ export default function () {
         }
     }, [currentChat]);
 
-    
+    function renderChat () {
+      return !!chats.length && (
+        <div className={ styles.chat }>
+          <ChatStack chats={chats} setCurrentChat={setCurrentChat} className={styles.chats}/>
+          <div className={styles.wrapper}>
+            <ChatHeader user={user} currentChat={currentChat}/>
+            <Messages messages={messages} currentChat={currentChat}  user={user}/>
+            {currentChat.id && (
+              <BodyForm className={styles.send} navigateTo='' onSubmit={(event,formData ) => {sendMessage(currentChat.id, formData.message);}}>
+                <input type="text" name="message" required placeholder="Текст сообщения" />
+                <input type="submit" value="Отправить" />
+              </BodyForm>
+            )}
+          </div>
+        </div>)
+    }
 
     return (<>
     <CreateDialog />
     <JoinDialog />
-    <div className={ styles.chat }>
-        <ChatStack chats={chats} setCurrentChat={setCurrentChat} className={styles.chats}/>
-        <div className={styles.wrapper}>
+    {renderChat()}
 
-           <ChatHeader/>
-            <Messages messages={messages} currentChat={currentChat} />
-
-        <BodyForm style={styles.send} navigateTo='' onSubmit={(event,formData ) => {
-                sendMessage(currentChat.id,formData.message);
-            }
-        }>
-            <input type="text" name="message" placeholder="Текст сообщения" />
-            <input type="submit" value="Отправить" />
-        </BodyForm>
-        </div>
-        </div>
         </>
     )
 }

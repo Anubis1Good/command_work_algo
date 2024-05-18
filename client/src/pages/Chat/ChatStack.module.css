@@ -1,0 +1,35 @@
+.chatItem {
+    cursor: pointer;
+
+    padding: 1rem 0 1rem 0;
+    font-size: large;
+    text-align: center;
+    border-radius: 1rem;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+}
+
+.chatItem:hover {
+    background-color: rgba(0, 0, 0, 0.15);
+}
+.chats {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: start;
+
+    overflow-y: auto;
+    overflow-x: auto;
+    height: 100%;
+
+    width: 20%;
+    padding: 1rem;
+    gap:1rem;
+
+    background: rgba(0, 0, 0, 0.2);
+
+}

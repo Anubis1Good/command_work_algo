@@ -1,0 +1,72 @@
+.chatHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-bottom-left-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+
+}
+
+.chatHeaderTitle {
+    font-size: 1.5rem;
+    font-weight: bold;
+    max-width: 400px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.chatHeaderButtons {
+    display: flex;
+    gap: 10px;
+}
+
+.chatHeaderButton {
+    background-color: rgba(0, 0, 0, 0.15);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 1rem;
+    position: relative;
+}
+.chatHeaderButton:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+.chatHeaderButton:active {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+.chatHeaderDropdown {
+    position: absolute;
+    z-index: 1;
+    backdrop-filter: blur(10px);
+    background-color: rgba(0, 0, 0, 0.15);
+
+
+}
+
+.chatHeaderDropdownItem:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.chatHeaderDropdownItem:active {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.chatHeaderDropdownItem {
+
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+
+    position: relative;
+
+
+}
+.chatHeaderMember {
+    margin-right: 10px;
+}

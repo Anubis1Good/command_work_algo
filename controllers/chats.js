@@ -1,4 +1,4 @@
-import {chats, tokens, users} from '../db/controller.js'
+import {chats, tokens, users, messages} from '../db/controller.js'
 import { emitter } from './main.js';
 import {authenticate} from './utils.js'
 
@@ -17,6 +17,7 @@ export const createChat = async (req, res) => {
     try {
         const chat_id = await chats.createChat(name, user_id);
 
+        emitter.emit("onJoinChat", chat_id, user_id);
         res.json({ response: chat_id }).status(201);
     } 
     catch (error) {
@@ -33,7 +34,7 @@ export const getJoinedChats = async (req, res) => {
 
     try {
         let chats_list = await chats.getChatsFromUser(user_id);
-        
+        console.log(chats_list)  
 
 
         res.json({ response: chats_list }).status(200);
@@ -126,7 +127,7 @@ export const leaveChat = async (req,res) => {
         return res.json({ error: 'Invalid parameters' }).status(400);
     }
     try {
-        if (!await members.isMemberInChat(user_id, req.params.chat_id)) {
+        if (!await chats.isUserinChat(user_id, req.params.chat_id)) {
             return res.json({ error: 'Not a member of this chat' }).status(403);
         }
         await chats.deleteMember(req.params.chat_id,user_id);
@@ -149,12 +150,16 @@ export const deleteChat = async (req, res) => {
         return res.json({ error: 'Invalid parameters' }).status(400);
     }
     try {
-        if (!await members.isOwner(user_id, req.params.chat_id)) {
+        if (!await chats.exists(req.params.chat_id)) {
+            return res.json({ error: 'Chat not found' }).status(404);
+        }       
+        if (!await chats.isOwner(req.params.chat_id, user_id)) {
             return res.json({ error: 'Not the owner of this chat' }).status(403);
         }
-        await chats.deleteChat(req.params.chat_id);
-        emitter.emit("onDeleteChat", req.params.chat_id);
-        res.json({ response: 'Deleted chat' }).status(200);
+
+    emitter.emit("onDeleteChat", await chats.getChat(req.params.chat_id), await chats.getMembersFromChat(req.params.chat_id));
+
+    res.json({ response: 'Deleted chat' }).status(200);
 
     } catch (error) {
         console.error(error);
@@ -182,3 +187,24 @@ export const transferOwnership = async (req, res) => {
         res.json({ error: 'Internal server error' }).status(500);
     }
 }
+export const renameChat = async (req, res) => {
+    const user_id = await authenticate(req, res);
+    if (!user_id) {
+        return res.json({ error: 'Not logged in or invalid token' }).status(401);
+    }
+    if (!req.params.chat_id) {
+        return res.json({ error: 'Invalid parameters' }).status(400);
+    }
+    try {
+        if (!await members.isOwner(user_id, req.params.chat_id)) {
+            return res.json({ error: 'Not the owner of this chat' }).status(403);
+        }
+        await chats.renameChat(req.params.chat_id, req.body.name);
+        res.json({ response: 'Renamed chat' }).status(200);
+
+    } catch (error) {
+        console.error(error);
+        res.json({ error: 'Internal server error' }).status(500);
+    }
+}
+

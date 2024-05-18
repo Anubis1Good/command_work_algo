@@ -1,179 +1,65 @@
 .chat {
     display: flex;
     flex-direction: row;
+    width: 100%;
+    height: 100%;
+    color:white;
+    overflow: hidden;
+    background:  linear-gradient(360deg, rgb(118, 48, 148) 0%, rgb(164, 89, 173) 100%);  /* fallback for old browsers */
+}
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+.send {
+    flex-grow: 0.125;
+    height: 10%;
+    width: 100%;
+
+    display: flex;
+
+
+}
+.send > input {
+    color: white;
     height: 100%;
     width: 100%;
-    overflow: visible;
-}
-
-.chat-header {
-    flex-shrink: 0;
-    width: 250px;
-    background: linear-gradient(130deg, #ce70d6, #793a9f);
-    color: white;
-    padding: 10px;
-}
-
-.chat-header > h1 {
-    font-size: large;
-    margin: 0;
-}
-
-.chat-header > button {
-    background-color: transparent;
     border: none;
+    background: rgba(0, 0, 0, 0.1);
+    font-size: 1rem;
+    padding: 0 1rem 0 0 ;
+
+
+
+}
+.send > input[type="text"]:focus {
+    outline: none;
+    background: rgba(0, 0, 0, 0.2);
+
+
+}
+.send > input[type="text"]::placeholder {
     color: white;
-    cursor: pointer;
 }
+.send > input[type="text"] {
+    border-top-left-radius: 1rem;
 
-.chat-header > button:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    padding: 0 1rem;
 }
-
-.chat-body {
-    flex-grow: 1;
-    overflow-y: scroll;
-}
-
-.chat-body > .messages {
-    display: flex;
-    flex-direction: column;
-    padding: 10px;
-}
-
-.chat-body > .messages > .message {
-    margin-bottom: 5px;
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-}
-
-.chat-body > .messages > .message > .text {
-    background-color: rgba(255, 255, 255, 0.1);
-    padding: 10px;
-    border-radius: 10px;
-}
-
-.chat-body > .messages > .message > .avatar {
-    margin-right: 10px;
-}
-
-.chat-body > .messages > .message > .avatar > img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-}
-
-.chat-body > .chats {
-    display: flex;
-    flex-direction: column;
-    padding: 10px;
-}
-
-.chat-body > .chats > .chat-item {
-    margin-bottom: 5px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    cursor: pointer;
-}
-
-.chat-body > .chats > .chat-item:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-.chat-body > .chats > .chat-item > .avatar {
-    margin-right: 10px;
-}
-
-.chat-body > .chats > .chat-item > .avatar > img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-}
-
-.chat-body > .chats > .chat-item > .name {
-    flex-grow: 1;
-}
-
-.chat-input {
-    flex-shrink: 0;
-    padding: 10px;
-}
-
-.chat-input > form {
-    display: flex;
-    flex-direction: row;
-}
-
-.chat-input > form > input {
-    flex-grow: 1;
-}
-
-.chat-input > form > button {
-    background-color: transparent;
+.send > input[type="submit"] {
+    flex: 0.5;
+    background-color:  rgba(0, 0, 0, 0.2);
+    color: white;
     border: none;
-    color: white;
     cursor: pointer;
-}
+    border-top-right-radius: 1rem;
 
-.chat-input > form > button:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-}
 
-/* Width of the scrollbar */
-::-webkit-scrollbar {
-    width: 12px;
-  }
-  
-  /* Track of the scrollbar */
-  ::-webkit-scrollbar-track {
-    background: #f0f0f0;
-  }
-  
-  /* Thumb of the scrollbar */
-  ::-webkit-scrollbar-thumb {
-    background-color: #ccc;
-    border-radius: 10px;
-  }
-  
-  /* Hover effect on the thumb */
-  ::-webkit-scrollbar-thumb:hover {
-    background-color: #aaa;
-  }
-  
-  /* For Firefox */
-  ::-moz-scrollbar {
-    width: 12px;
-  }
-  
-  ::-moz-scrollbar-track {
-    background: #f0f0f0;
-  }
-  
-  ::-moz-scrollbar-thumb {
-    background-color: #ccc;
-    border-radius: 10px;
-  }
-  
-  ::-moz-scrollbar-thumb:hover {
-    background-color: #aaa;
-  }
-  
-  /* For Edge */
-  ::-ms-scrollbar {
-    width: 12px;
-  }
-  
-  ::-ms-scrollbar-track {
-    background: #f0f0f0;
-  }
-  
-  ::-ms-scrollbar-thumb {
-    background-color: #ccc;
-    border-radius: 10px;
-  }
-  
-  ::-ms-scrollbar-thumb:hover {
-    background-color: #aaa;
-  }
+    
+}
+.send > input[type="submit"]{
+    text-align: center;
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 0.5rem 1rem;}

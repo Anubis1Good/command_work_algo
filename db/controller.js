@@ -17,21 +17,23 @@ class ChatsDB{
         db.serialize(() => {
         
             db.run(`CREATE TABLE IF NOT EXISTS chats (
-                id INTEGER PRIMARY KEY,
+                id INTEGER PRIMARY KEY UNIQUE NOT NULL,
                 create_time INTEGER,
                 name TEXT,
                 owner_id INTEGER, 
                 FOREIGN KEY(owner_id) REFERENCES users(id))`);
            
             db.run(`CREATE TABLE IF NOT EXISTS chat_members (
-                id INTEGER PRIMARY KEY,
+                id INTEGER PRIMARY KEY UNIQUE NOT NULL,
                 chat_id INTEGER,
                 user_id INTEGER,
                 FOREIGN KEY(chat_id) REFERENCES chats(id),
-                FOREIGN KEY(user_id) REFERENCES users(id))`);
+                FOREIGN KEY(user_id) REFERENCES users(id)
+                UNIQUE(chat_id, user_id))
+                `);
 
             db.run(`CREATE TABLE IF NOT EXISTS chat_invites ( 
-                id INTEGER PRIMARY KEY,
+                id INTEGER PRIMARY KEY UNIQUE NOT NULL,
                 invite_token TEXT,
                 chat_id INTEGER,
                 expiry_time INTEGER,
@@ -43,41 +45,32 @@ class ChatsDB{
     async createChat(name, owner_id) {
         const query = "INSERT INTO chats (name, owner_id, create_time) VALUES (?, ?, ?)";
         const params = [name, owner_id, Date.now()];
-
+        console.log(params, query)
         return new Promise((resolve, reject) => {
-            this.db.run(query, params, (error) => {if(error) reject(error)
-                try {
-                    // due to closure problems "this" doesn't contain the last id, so we have to use this
-                    this.db.get("SELECT last_insert_rowid() FROM chats", async (error, row) => 
-                    {
-                        if(error) {
-                            reject(error);
-                            return;
-                        }
-                        try {
-                            await this.addMember(row["last_insert_rowid()"], owner_id);
-                            resolve(row["last_insert_rowid()"]);
-                        }
-                        catch(error) {
-                            reject(error);
-                        }
-                    });
-
-                }
-                catch(error) {
-                    reject(error)
-                }
+            this.db.run(query, params, function(error) {
+                if(error) reject(error)
+                chats.addMember(this.lastID, owner_id);
+                resolve(this.lastID);
             });
         }
     );
     }
 
+    async exists(id) {
+        const query = "SELECT * FROM chats WHERE id = ?";
+        const params = [id];
+        return new Promise((resolve, reject) => {
+            this.db.get(query, params, (error, row) => {error? reject(error) : resolve(!!row)});
+        });
+    }
     async getChat(id) {
         const query = "SELECT * FROM chats WHERE id = ?";
         const params = [id];
 
         return new Promise((resolve, reject) => {
-          this.db.get(query, params, (error, row) => {error? reject(error) : resolve(row);});
+          this.db.get(query, params, (error, row) => {error? reject(error) : 
+            resolve(row);
+          });
       });
     }
     
@@ -101,11 +94,13 @@ class ChatsDB{
     
 
     async deleteChat(id) {
-        const query = "DELETE FROM chats WHERE id = ?";
-        const params = [id];
-
+        const queries = ["DELETE FROM chats WHERE id = ?",
+         "DELETE FROM chat_members WHERE chat_id = ?",
+          "DELETE FROM chat_invites WHERE chat_id = ?",
+          "DELETE FROM messages WHERE chat_id = ?"];
         return new Promise((resolve, reject) => {
-            this.db.run(query, params, (error) => {error? reject(error) : resolve()});
+            for (const query of queries) {
+                this.db.run(query, [id], function(error) {error? reject(error) : resolve()});}
         });
     }
     
@@ -117,10 +112,19 @@ class ChatsDB{
             this.db.get(query, params, (error, row) => {error? reject(error) : resolve(!!row)});
         });
     }
+
+    async renameChat(chat_id, name) {
+        const query = "UPDATE chats SET name = ? WHERE id = ?";
+        const params = [name, chat_id];
+
+        return new Promise((resolve, reject) => {
+            this.db.run(query, params, (error) => {error? reject(error) : resolve()});
+        });
+    }
     async addMember(chat_id, user_id) {
         const query = "INSERT INTO chat_members (chat_id, user_id) VALUES (?, ?)";
         const params = [chat_id, user_id];
-
+        console.log("addMember: "+params)
         return new Promise((resolve, reject) => {
             this.db.run(query, params, (error) => {error? reject(error) : resolve()});
         });
@@ -192,14 +196,8 @@ class MessagesDB {
         const params = [chat_id, sender_id, Date.now(), message];
 
         return new Promise((resolve, reject) => {
-            this.db.run(query, params, (error) => {if(error) reject(error)
-                try {
-                    // due to closure problems "this" doesn't contain the last id, so we have to use this
-                    this.db.get("SELECT last_insert_rowid() FROM chats", async (error, row) => {error? reject(error) : resolve(row["last_insert_rowid()"])});
-                }
-                catch(error) {
-                    reject(error);
-                }});
+            this.db.run(query, params, function(error) {if(error) reject(error)
+            else resolve(this.lastID);});
         });
     }
 
@@ -217,7 +215,10 @@ class MessagesDB {
         const params = [chat_id];
 
         return new Promise((resolve, reject) => {
-            this.db.all(query, params, (error, rows) => {error? reject(error) : resolve(rows)});
+            this.db.all(query, params, function(error, rows){
+                console.log(rows)
+                error? reject(error) : resolve(rows);
+            });
         });
     }
 
