@@ -1,6 +1,6 @@
 .join_button {
     width: 100%;
-    height: 50px;
+
     border-radius: 15px;
     font-weight: bold;
     background: rgba(0, 0, 0, 0.1);    
@@ -14,7 +14,7 @@
     align-items: center;
     justify-content: space-evenly;
     gap: 1rem;
-    padding: 0 1rem;
+    padding: 1rem 1rem;
 }
 .join_button > svg {
     font-size: 1.2rem;
