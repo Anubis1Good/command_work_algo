@@ -1,5 +1,5 @@
 
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { getJoinedChats,getChatMessages,getChat } from "../../utils/queries/chats";
 import BodyForm from '../../components/BodyForm/BodyForm';
 import styles from './ChatPage.module.css';
@@ -90,13 +90,13 @@ export default function () {
         }
     }, [currentChat]);
 
-    function renderChat () {
-      return !!chats.length && (
+       function renderChat () {
+      return !!chats && (
         <div className={ styles.chat }>
           <ChatStack chats={chats} setCurrentChat={setCurrentChat} className={styles.chats}/>
           <div className={styles.wrapper}>
             <ChatHeader user={user} currentChat={currentChat}/>
-            <Messages messages={messages} currentChat={currentChat}  user={user}/>
+            <Messages messages={messages} currentChat={currentChat}  user={user} />
             {currentChat.id && (
               <BodyForm className={styles.send} navigateTo='' onSubmit={(event,formData ) => {sendMessage(currentChat.id, formData.message);}}>
                 <input type="text" name="message" required placeholder="Текст сообщения" />

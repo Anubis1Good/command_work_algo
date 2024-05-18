@@ -5,7 +5,7 @@
     align-items: start;
     justify-content: start;
 
-    overflow-y: auto;
+    overflow-y: scroll;
     overflow-x: hidden;
     height: 100%;
     flex-grow: 0.25;
@@ -23,7 +23,7 @@
     padding: 1rem;
     border-radius: 10px;
     height:  auto;
-    margin-right: 1rem;
+    margin-right: 2rem;
 }
 .messageOwn {
     align-self: flex-end;

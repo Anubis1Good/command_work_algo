@@ -216,7 +216,6 @@ class MessagesDB {
 
         return new Promise((resolve, reject) => {
             this.db.all(query, params, function(error, rows){
-                console.log(rows)
                 error? reject(error) : resolve(rows);
             });
         });

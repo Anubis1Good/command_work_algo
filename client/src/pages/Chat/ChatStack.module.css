@@ -24,7 +24,7 @@
 
     overflow-y: auto;
     overflow-x: auto;
-    height: 100%;
+    height: auto;
 
     width: 20%;
     padding: 1rem;
