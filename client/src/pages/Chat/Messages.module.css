@@ -1,0 +1,35 @@
+.massages {
+    border: solid 1em #6A5ACD;
+    border-radius: 25px;
+    background-color: rgb(233, 206, 250)
+
+}
+
+.massagesAuther {
+    font-family: "Comfortaa", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    color: #3f1f68;
+    font-size: 15px;
+    margin: 3px;
+    display: flex;
+}
+
+.massagesContent {
+    font-family: "Comfortaa", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    color: #4f2881;
+    font-size: 13px;
+    margin: 4px;
+}
+
+.massagesTime {
+    font-family: "Comfortaa", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    font-size: 7px;
+    display: flex;
+    justify-content: end;
+    margin: 8px;
+}
