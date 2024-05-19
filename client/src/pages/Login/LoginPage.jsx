@@ -15,7 +15,10 @@ export default function () {
         <>
         <BodyForm className={styles.form} onSubmit={(event,formData ) => {
             console.log(formData.username)
-            setIsAuthenticated(loginUser(formData.username,formData.password));
+            loginUser(formData.username,formData.password).then((response) => {
+                console.log(response)
+                setIsAuthenticated(response);
+            });
         }}>
             <label htmlFor="username"> Имя пользователя</label>
             <input type="text" name="username" id="username" />

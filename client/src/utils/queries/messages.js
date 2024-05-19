@@ -10,3 +10,12 @@ export const sendMessage = async (chat_id, message) => {
 
     return response.ok
 }
+export const deleteMessage = async (chat_id,message_id) => {
+    const response = await fetch('/api/v1/chats/'+chat_id+'/message/'+message_id, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    return response.ok
+}

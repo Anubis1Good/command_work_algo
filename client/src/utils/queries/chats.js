@@ -5,7 +5,6 @@ export const getChat = async (id) => {
             "Content-Type": "application/json",
         }});
     const data = await response.json();
-
     return data.response;
 }
 export async function getChatMessages(chatId) {
@@ -76,6 +75,28 @@ export const transferOwnership = async (chatId, userId) => {
         },
         body: JSON.stringify({user_id: userId})
     });
+    const data = await response.json();
+    return data.response;
+}
+
+export const renameChat = async (chatId, name) => {
+    const response = await fetch(`/api/v1/chats/${chatId}/rename`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({name: name})
+    });
+    const data = await response.json();
+    return data.response;
+}
+
+export const getMembersFromChat = async (chatId) => {
+    const response = await fetch(`/api/v1/chats/${chatId}/members`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        }});
     const data = await response.json();
     return data.response;
 }

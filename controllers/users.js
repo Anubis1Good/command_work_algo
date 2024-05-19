@@ -64,7 +64,7 @@ export const loginUser = async (req, res) => {
   try {
     const id = await users.getIdByName(username);
     if (!id || !await users.matchesPassword(id, password)) {
-      return res.json({ error: 'Invalid credentials' }).status(401);
+      return res.status(401).json({ error: 'Invalid credentials' });
     }
 
     const token = await tokens.createToken(id);
@@ -156,4 +156,15 @@ export const getUser = async (req, res) => {
     console.error(error);
     res.json({ error: 'Internal server error' }).status(500);
   }
+}
+
+export const getMyself = async (req, res) => {
+  const user_id = await authenticate(req, res);
+  if (!user_id) {
+      return res.json({ error: 'Not logged in or invalid token' }).status(401);
+  }
+  const user = await users.getUser(user_id);
+  delete user.hash; // No security risks for you today
+  res.json({ response: user }).status(200);
+
 }
