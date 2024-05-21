@@ -73,3 +73,20 @@
     gap: 1rem;
 
 }
+.sidebar {
+    flex: 0.25;
+}
+
+.burger {
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 1em;
+    border-radius: 1rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: none;
+    cursor: pointer;
+    color: white;
+}

@@ -101,3 +101,13 @@ export const getMembersFromChat = async (chatId) => {
     return data.response;
 }
 
+export const getUser = async (id) => {
+    const response = await fetch(`/api/v1/users/${id}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        }});
+    const data = await response.json();
+    console.log(data)
+    return data.response;
+}

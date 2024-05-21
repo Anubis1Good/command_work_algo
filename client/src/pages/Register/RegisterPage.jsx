@@ -11,8 +11,8 @@ export default function () {
     const [isAuthenticated,setAuthenticated] = useContext(AuthContext);
     return (
         <>
-        <BodyForm className={styles.form} resource="/api/v1/register" onSubmit={(event,formData) => {
-            setAuthenticated(registerUser(formData.username,formData.password));
+        <BodyForm className={styles.form} resource="/api/v1/register" onSubmit={async (event,formData) => {
+            setAuthenticated(await registerUser(formData.username,formData.password));
         }}>
             <h1>Регистрация</h1>
             <label htmlFor="username"> Имя пользователя</label>

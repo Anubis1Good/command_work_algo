@@ -4,17 +4,14 @@ import styles from './ChatHeader.module.css';
 export default function (props) {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-    function renderMembers() {
-        return props.currentChat.members ? props.currentChat.members.map(member => (
-            <div key={member.id} className={styles.chatHeaderMember}>{member.username}</div>
-        )) : null
-    }
+
     return props.currentChat.id && (
 
         <div>
+           
             <div className={styles.chatHeader}>
+                {props.children}
                 <div className={styles.chatHeaderTitle}>{props.currentChat.name}</div>
-                {renderMembers()}
                 <div className={styles.chatHeaderButtons}>
                     <button className={styles.chatHeaderButton} onClick={() => setIsDropdownOpen(!isDropdownOpen)}>...</button>
                 </div>

@@ -1,7 +1,7 @@
 
 import { Router } from "express";
 import { main, sse } from "../controllers/main.js";
-import { createUser, loginUser, logoutUser, changePassword, deleteUser, isAuthenticated, getMyself } from "../controllers/users.js";
+import { createUser, loginUser, logoutUser, changePassword, deleteUser, isAuthenticated, getMyself, getUser } from "../controllers/users.js";
 import {getJoinedChats,getChat, createChat, getMembers, joinChat, leaveChat, transferOwnership, deleteChat} from "../controllers/chats.js";
 import { deleteMessage, getMessages, sendMessage } from "../controllers/messages.js";
 const router = Router()
@@ -196,4 +196,5 @@ router.post('chats/:chat_id/transfer', transferOwnership);
 router.delete('/chats/:chat_id/', deleteChat);
 
 router.get('/me',getMyself);
+router.get('/users/:user_id',getUser);
 export default router
