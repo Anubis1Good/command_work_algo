@@ -101,6 +101,10 @@ export const joinChat = async (req, res) => {
 
     try {
         const invite = await chats.getInvite(req.body.token);
+
+        if (!invite) {
+            return res.json({ error: 'Invalid invite' }).status(403);
+        }
         if (await chats.isUserinChat(user_id,invite.chat_id)) {
             return res.json({ error: 'Already a member of this chat' }).status(403);
         }

@@ -10,7 +10,6 @@ export default function InviteMenu(props) {
     const [invites, setInvites] = useState([]);
 
     useEffect(() => {
-        console.log(props.isInviteMenuOpen)
         if (props.isInviteMenuOpen) {
             dialogRef.current.showModal();
         } else {

@@ -35,7 +35,7 @@ export const joinChat = async (token) => {
         body: JSON.stringify({token: token})
     });
     const data = await response.json();
-    return data.response;
+    return data;
 }
 
 export const createChat = async (name) => {
@@ -47,7 +47,7 @@ export const createChat = async (name) => {
         body: JSON.stringify({name: name})
     });
     const data = await response.json();
-    return data.response;
+    return data;
 }
 
 export const leaveChat = async (chatId) => {

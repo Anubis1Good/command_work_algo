@@ -36,7 +36,8 @@ export default function (props) {
             {isDropdownOpen ?
             <div className={styles.chatHeaderDropdown}>
                 <div className={styles.chatHeaderDropdownItem} onClick={() => {setIsDropdownOpen(false); handleAddInviteClick()}}>Создать приглашение</div>
-                <div className={styles.chatHeaderDropDownItem} onClick={() => {setIsInviteMenuOpen(true);setIsDropdownOpen(false)}}>Мои Приглашения</div>
+
+                <div className={styles.chatHeaderDropdownItem} onClick={() => {setIsInviteMenuOpen(true);setIsDropdownOpen(false)}}>Мои Приглашения</div>
                 
                 <div className={styles.chatHeaderDropdownItem} onClick={() => {leaveChat(props.currentChat.id);setIsDropdownOpen(false)}}>Покинуть чат</div>
 

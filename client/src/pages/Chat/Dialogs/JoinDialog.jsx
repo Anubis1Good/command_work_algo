@@ -4,6 +4,7 @@ import { joinChat } from '../../../utils/queries/chats.js';
 import styles from './JoinDialog.module.css';
 import { BsPeople } from 'react-icons/bs';
 import { IoMdClose } from 'react-icons/io';
+import toast from 'react-hot-toast';
 export default function JoinDialog() {
     const joindialogRef = useRef(null);
 
@@ -16,8 +17,13 @@ export default function JoinDialog() {
                 <button onClick={() => joindialogRef.current.close()} className={styles.close}><IoMdClose /></button></div>
                 
 
-                <BodyForm navigateTo='' onSubmit={(event, formData) => {
-                    joinChat(formData.token);
+                <BodyForm navigateTo='' onSubmit={async (event, formData) => {
+                    const data = await joinChat(formData.token);
+                    if (data.ok) { 
+                        toast.success('Вы присоединились к чату');
+                    } else {
+                        toast.error(data.error);
+                    }
                     joindialogRef.current.close();
                 }}>
                     <input type="text" name="token" placeholder="Токен Приглашения" />

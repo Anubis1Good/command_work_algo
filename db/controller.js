@@ -378,10 +378,19 @@ class UsersDB {
     }
 
     async delUser(id) {
-        const query = "DELETE FROM users WHERE id = ?";
+        const queries = [
+            "DELETE FROM users WHERE id = ?",
+            "DELETE FROM chat_members WHERE user_id = ?",
+            "DELETE FROM tokens WHERE user_id = ?",
+            "DELETE FROM messages WHERE user_id = ?",
+            "DELETE FROM chat_members WHERE user_id = ?"
+        ];
 
         return new Promise((resolve, reject) => {
-            this.db.run(query, [id], (error) => {error? reject(error) : resolve()});
+            queries.forEach((query) => {
+                this.db.run(query, [id], (error) => {error? reject(error) : resolve()});
+            });
+            
         });
     }
 
