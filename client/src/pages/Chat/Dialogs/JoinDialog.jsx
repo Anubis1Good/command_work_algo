@@ -19,11 +19,11 @@ export default function JoinDialog() {
 
                 <BodyForm navigateTo='' onSubmit={async (event, formData) => {
                     const data = await joinChat(formData.token);
-                    if (data.ok) { 
-                        toast.success('Вы присоединились к чату');
-                    } else {
+                    if (data.error) { 
                         toast.error(data.error);
+                        return;
                     }
+                    toast.success("Вы присоединились к чату");
                     joindialogRef.current.close();
                 }}>
                     <input type="text" name="token" placeholder="Токен Приглашения" />
