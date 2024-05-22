@@ -9,7 +9,7 @@ export const registerUser = async (name, password) => {
     },
     body: JSON.stringify({username: name, password: password} )
   })
-  return response.ok
+  return response
   }
   catch(e){
     return false
@@ -27,7 +27,7 @@ export const loginUser = async (name, password) => {
       },
       body: JSON.stringify({username: name, password: password} )
     })
-    return response.ok
+    return response
   }
   catch(e){
     console.log(e)

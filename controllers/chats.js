@@ -98,20 +98,25 @@ export const joinChat = async (req, res) => {
     if (!user_id) {
         return res.json({ error: 'Not logged in or invalid token' }).status(401);
     }
-    if (!req.params.chat_id) {
-        return res.json({ error: 'Invalid parameters' }).status(400);
-    }
+
     try {
-        if (await chats.isUserinChat(user_id, req.params.chat_id)) {
+        const invite = await chats.getInvite(req.body.token);
+        if (await chats.isUserinChat(user_id,invite.chat_id)) {
             return res.json({ error: 'Already a member of this chat' }).status(403);
         }
 
-        if (!await chats.exists(req.params.chat_id)) {
+        if (!await chats.exists(invite.chat_id)) {
             return res.json({ error: 'Chat doesnt exist you idiot sandwitch' }).status(404);
         }
-        await chats.addMember(req.params.chat_id,user_id);
+        
+        if (!invite) {
+            return res.json({ error: 'Invalid invite' }).status(403);
+        }
 
-        emitter.emit("onJoinChat", req.params.chat_id, user_id);
+       
+        await chats.addMember(invite.chat_id,user_id);
+
+        emitter.emit("onJoinChat", invite.chat_id, user_id);
         res.json({ response: 'Joined chat' }).status(200);
 
     } catch (error) {
@@ -212,3 +217,55 @@ export const renameChat = async (req, res) => {
     }
 }
 
+export const addInvite = async (req, res) => {
+    const user_id = await authenticate(req, res);
+    if (!user_id) {
+        return res.json({ error: 'Not logged in or invalid token' }).status(401);
+    }
+    if (!req.params.chat_id) {
+        return res.json({ error: 'Invalid parameters' }).status(400);
+    }
+    try {
+        const invite = await chats.addInvite(req.params.chat_id, user_id);
+        res.json({ response: invite }).status(200);
+
+    } catch (error) {
+        console.error(error);
+        res.json({ error: 'Internal server error' }).status(500);
+    }
+}
+
+export const deleteInvite = async (req, res) => {
+    const user_id = await authenticate(req, res);
+    if (!user_id) {
+        return res.status(401).json({ error: 'Not logged in or invalid token' });
+    }
+    if (!req.params.chat_id) {
+        return res.status(400).json({ error: 'Invalid parameters' });
+    }
+    try {
+        await chats.deleteInvite(req.params.chat_id, req.body.invite_id);
+        res.json({ response: 'Deleted invite' }).status(200);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+export const getUserInvites = async (req, res) => {
+    const user_id = await authenticate(req, res);
+    if (!user_id) {
+        return res.status(401).json({ error: 'Not logged in or invalid token' });
+    }
+    if (!req.params.chat_id) {
+        return res.status(400).json({ error: 'Invalid parameters' });
+    }
+    try {
+        const invites = await chats.getUserInvites(user_id, req.params.chat_id);
+        res.json({ response: invites }).status(200);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}

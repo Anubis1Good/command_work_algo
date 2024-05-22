@@ -17,10 +17,10 @@ export default function JoinDialog() {
                 
 
                 <BodyForm navigateTo='' onSubmit={(event, formData) => {
-                    joinChat(formData.id);
+                    joinChat(formData.token);
                     joindialogRef.current.close();
                 }}>
-                    <input type="text" name="id" placeholder="ID чата" />
+                    <input type="text" name="token" placeholder="Токен Приглашения" />
                     <input type="submit" value="Присоединиться" />
                 </BodyForm>
             </dialog>

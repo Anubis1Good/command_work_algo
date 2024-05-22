@@ -26,12 +26,14 @@ export const getJoinedChats = async () => {
     return data.response;
 }
 
-export const joinChat = async (chatId) => {
-    const response = await fetch(`/api/v1/chats/${chatId}/join`, {
+export const joinChat = async (token) => {
+    const response = await fetch(`/api/v1/chats/join`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-        }});
+        },
+        body: JSON.stringify({token: token})
+    });
     const data = await response.json();
     return data.response;
 }
@@ -109,5 +111,47 @@ export const getUser = async (id) => {
         }});
     const data = await response.json();
     console.log(data)
+    return data.response;
+}
+
+export const addInvite = async (chatId) => {
+    const response = await fetch(`/api/v1/chats/${chatId}/invite`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        }});
+    const data = await response.json();
+    return data.response;
+}
+export const deleteInvite = async (chatId,inviteId) => {
+    const response = await fetch(`/api/v1/chats/${chatId}/invite`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({invite_id: inviteId})
+    });
+    const data = await response.json();
+    return data.response;
+}
+export const kickUser = async (chatId, userId) => {
+    const response = await fetch(`/api/v1/chats/${chatId}/kick`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({user_id: userId})
+    });
+    const data = await response.json();
+    return data.response;
+}
+
+export const getUserInvites = async (chatId) => {
+    const response = await fetch(`/api/v1/chats/${chatId}/invites`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        }});
+    const data = await response.json();
     return data.response;
 }

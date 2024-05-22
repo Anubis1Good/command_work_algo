@@ -76,6 +76,7 @@ export const loginUser = async (req, res) => {
 
   try {
     const id = await users.getIdByName(username);
+    
     if (!id || !await users.matchesPassword(id, password)) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }

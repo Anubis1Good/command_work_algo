@@ -2,7 +2,7 @@
 import { Router } from "express";
 import { main, sse } from "../controllers/main.js";
 import { createUser, loginUser, logoutUser, changePassword, deleteUser, isAuthenticated, getMyself, getUser } from "../controllers/users.js";
-import {getJoinedChats,getChat, createChat, getMembers, joinChat, leaveChat, transferOwnership, deleteChat} from "../controllers/chats.js";
+import {getJoinedChats,getChat, createChat, getMembers, joinChat, leaveChat, transferOwnership, deleteChat, addInvite, deleteInvite, getUserInvites} from "../controllers/chats.js";
 import { deleteMessage, getMessages, sendMessage } from "../controllers/messages.js";
 const router = Router()
 
@@ -123,7 +123,7 @@ router.get('/chats/:chat_id/members', getMembers);
  * 
  * @apiSuccess {String} message Joined
  */
-router.post('/chats/:chat_id/join', joinChat);
+router.post('/chats/join', joinChat);
 
 /**
  * @api {post} /chats/:chat_id/leave Leave chat
@@ -197,4 +197,7 @@ router.delete('/chats/:chat_id/', deleteChat);
 
 router.get('/me',getMyself);
 router.get('/users/:user_id',getUser);
+router.get('/chats/:chat_id/invite', addInvite);
+router.delete('/chats/:chat_id/invite', deleteInvite);
+router.get('/chats/:chat_id/invites', getUserInvites);
 export default router

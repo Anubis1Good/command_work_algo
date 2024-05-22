@@ -95,7 +95,7 @@ export default function () {
         };
     }
     else {
-      setFirstChat()
+      setFirstChat(chats)
     }
     }
 
