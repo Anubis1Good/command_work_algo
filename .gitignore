@@ -24,4 +24,4 @@ dist-ssr
 *.sln
 *.sw?
 
-/db/database.db
+database.db
