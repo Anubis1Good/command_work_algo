@@ -77,7 +77,7 @@ export const deleteMessage = async (req, res) => {
             return res.json({ error: 'Message not found' }).status(404);
         }
         const message = await messages.getMessage(req.params.message_id);
-        if (message.user_id !== user_id && !(await chats.isOwner( req.params.chat_id, user_id))) {
+        if (message.sender_id !== user_id && !(await chats.isOwner( req.params.chat_id, user_id))) {
             return res.json({ error: 'Not allowed to delete this message' }).status(403);
         }
 

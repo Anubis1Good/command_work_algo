@@ -2,37 +2,43 @@ import styles from './Messages.module.css'
 import { useState } from 'react';
 import { deleteMessage } from '../../utils/queries/messages';
 import Markdown from 'react-markdown';
+import { FaEllipsisVertical } from 'react-icons/fa6';
+import { getUser} from '../../utils/queries/chats';
 export default function Message(props) {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     function getAuthorName(user_id) {
-        if (user_id) {
-            let member = props.currentChat.members ? props.currentChat.members.find((member) => member.id === user_id) : null
-            if (!member) {
-                console.log(`Got user id ${user_id} that is not in ${props.currentChat.members}`)
-                return "Error"
-            }
+        let member = props.currentChat.members.find(member => member.id === user_id)
+        if ( member ) {
             return member.username
+        } else {
+            getUser(user_id).then((data) => {
+                return data.name
+            })
         }
-        return "Error"
+
     }
 
     function handleClick(event) {
-
-        console.log(event.target)
         if (event.target === event.currentTarget) {
             setIsDropdownOpen(!isDropdownOpen);
             event.preventDefault();
-
-        } else if (!event.target.closest(`.${styles.message}`)) {
-            setIsDropdownOpen(false);
         }
     }
+
+    function handleDropdownClick(event) {
+
+            setIsDropdownOpen(!isDropdownOpen);
+    }
+
     return (
-        <div key={props.message.id} className={styles.message+(props.message.sender_id === props.user.id ? (" "+styles.messageOwn) :'') } onClick={handleClick} >
+        <div key={props.message.id} className={styles.message+(props.message.sender_id === props.user.id ? (" "+styles.messageOwn) :'') }>
             <div className={styles.messageHeader}>
                 <div className={styles.messageAuthor}>{getAuthorName(props.message.sender_id)}</div>
-                <div className={styles.messageTime}>{new Date(props.message.send_time).toLocaleString()}</div>
+                
+{        (props.user.id === props.message.sender_id || props.currentChat.owner_id === props.user.id )&&       ( <button className={styles.messageDropdownButton} onClick={handleDropdownClick}>
+    <FaEllipsisVertical />
+                </button> ) }
                 {isDropdownOpen && (
                     <div className={styles.messageDropdown}>
                         <div className={styles.messageDropdownItem} onClick={()=>deleteMessage(props.currentChat.id,props.message.id)}>Удалить</div>
@@ -41,8 +47,9 @@ export default function Message(props) {
                 )}
             </div>
             <Markdown className={styles.messageContent} >{props.message.message}</Markdown>
-
+            <div className={styles.messageTime}>{new Date(props.message.send_time).toLocaleString()}</div>
 
         </div>
     )
 }
+

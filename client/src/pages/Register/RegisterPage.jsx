@@ -3,16 +3,24 @@ import Header from "../../components/Header/Header"
 import BodyForm from "../../components/BodyForm/BodyForm"
 
 import { Link } from "react-router-dom";
-import { registerUser } from "../../utils/queries/authenticate";
+import { getMyself, registerUser } from "../../utils/queries/authenticate";
 import { useContext } from 'react';
 import { AuthContext } from '../../components/AuthProvider';
+import toast from "react-hot-toast";
 export default function () {
 
-    const [isAuthenticated,setAuthenticated] = useContext(AuthContext);
+    const [isAuthenticated,setAuthenticated,user,setUser] = useContext(AuthContext);
     return (
         <>
-        <BodyForm className={styles.form} resource="/api/v1/register" onSubmit={(event,formData) => {
-            setAuthenticated(registerUser(formData.username,formData.password));
+        <BodyForm className={styles.form} resource="/api/v1/register" onSubmit={async (event,formData) => {
+            const data = await registerUser(formData.username,formData.password)
+            setAuthenticated(data.ok);
+            if(data.ok) {
+                toast.success("Вы успешно зарегистрировались");
+                setUser(await getMyself());
+            }
+            else toast.error((await data.json()).error);
+
         }}>
             <h1>Регистрация</h1>
             <label htmlFor="username"> Имя пользователя</label>

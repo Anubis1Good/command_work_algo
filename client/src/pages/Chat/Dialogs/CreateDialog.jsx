@@ -5,11 +5,22 @@ import { createChat } from '../../../utils/queries/chats.js';
 import styles from './CreateDialog.module.css';
 import { FaPlus } from 'react-icons/fa';
 import { IoMdClose } from 'react-icons/io';
+import toast from 'react-hot-toast';
 export default function CreateDialog() {
     const dialogRef = useRef(null);
 
-    const handleFormSubmit = (event, formData) => {
-        createChat(formData.name);
+    const handleFormSubmit = async  (event, formData) => {
+        const response = await createChat(formData.name);
+
+        if (response.error) {
+            console.error(response.error);
+            toast.error(response.error);
+        }
+        else {
+            toast.success("Чат создан");
+        }
+
+        
         dialogRef.current.close();
     };
 

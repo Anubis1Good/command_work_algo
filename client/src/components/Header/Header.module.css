@@ -30,8 +30,6 @@
     min-height: 30px;
     border-radius: 50%;
     cursor: pointer;
-    position: absolute;
-    right: 1rem;
 
 
 }
@@ -58,4 +56,26 @@
     padding: 10px 20px;
     border: none;
     cursor: pointer;
+}
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    position: absolute;
+    right: 1rem;
+    text-align: center;
+    
+
+}
+.username {
+    max-width: 30vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+@media screen  and (max-width: 600px) {  
+    .brand {
+        display: none;
+    }
+    
 }

@@ -2,6 +2,7 @@ import sqlite3 from "sqlite3";
 import { generateExpiryTimeSpan, hashPassword, isExpired } from "./utils.js";
 import argon2 from "argon2";
 import randomstring from "randomstring"
+import {randomBytes} from 'node:crypto';
 const db = new sqlite3.Database('./db/database.db', (err) => {
     if (err) {
         console.error(err.message);
@@ -34,10 +35,12 @@ class ChatsDB{
 
             db.run(`CREATE TABLE IF NOT EXISTS chat_invites ( 
                 id INTEGER PRIMARY KEY UNIQUE NOT NULL,
-                invite_token TEXT,
+                user_id INTEGER,
+                token TEXT,
                 chat_id INTEGER,
                 expiry_time INTEGER,
-                FOREIGN KEY(chat_id) REFERENCES chats(id)    )
+                FOREIGN KEY(chat_id) REFERENCES chats(id),
+                FOREIGN KEY(user_id) REFERENCES users(id))
             `);
 });
     }
@@ -166,13 +169,53 @@ class ChatsDB{
         });
     }
     async addInvite(chat_id, user_id) {
-        const query = "INSERT INTO chat_invites (chat_id,expiry_time,token) VALUES (?, ?, ?, ?)";
-        const params = [chat_id, user_id, Date.now() + 3600000, crypto.randomBytes(32).toString('hex')];
+        const queries = ["INSERT INTO chat_invites (chat_id,expiry_time,token,user_id) VALUES (?, ?, ?, ?)","SELECT * FROM chat_invites WHERE id = last_insert_rowid()"];
+        const params = [chat_id, generateExpiryTimeSpan(), randomBytes(32).toString('hex'), user_id];
+
+        return new Promise((resolve, reject) => {
+            db.serialize(() => {
+                this.db.run(queries[0], params, (error) => {error&&reject(error)});
+                this.db.run("SELECT * FROM chat_invites", (error, row) => {error? reject(error) : console.log(row)});
+                this.db.get(queries[1], (error, row) => {error? reject(error) : resolve(row)});
+
+            });
+        });
+    }   
+    async isValidInvite(token) {
+        const query = "SELECT * FROM chat_invites WHERE token = ?";
+        const params = [token];
+
+        return new Promise((resolve, reject) => {
+            this.db.get(query, params, (error, row) => {error? reject(error) : resolve(!!row)});
+        });
+    }
+
+    async getInvite(token) {
+        const query = "SELECT * FROM chat_invites WHERE token = ?";
+        const params = [token];   
+
+        return new Promise((resolve, reject) => {
+            this.db.get(query, params, (error, row) => {error? reject(error) : resolve(row)});
+        });
+    }
+
+    async deleteInvite(id) {
+        const query = "DELETE FROM chat_invites WHERE id = ?";
+        const params = [id];
 
         return new Promise((resolve, reject) => {
             this.db.run(query, params, (error) => {error? reject(error) : resolve()});
         });
-    }   
+    }
+
+    async getUserInvites(user_id, chat_id) {
+        const query = "SELECT * FROM chat_invites WHERE user_id = ? AND chat_id = ?";
+        const params = [user_id, chat_id];
+        console.log("getUserInvites: "+params)
+        return new Promise((resolve, reject) => {
+            this.db.all(query, params, (error, rows) => {error? reject(error) : resolve(rows)});
+        });
+    }
 }
 
 class MessagesDB {
@@ -290,7 +333,6 @@ class TokensDB {
     async matchesToken(token) {
         const query = "SELECT user_id, expire_time FROM tokens WHERE token = ?"
         const params = [token]
-
         return new Promise((resolve, reject) => {
             this.db.get(query, params, (error, row) => {
                 if(error) {reject(error); return}
@@ -336,10 +378,19 @@ class UsersDB {
     }
 
     async delUser(id) {
-        const query = "DELETE FROM users WHERE id = ?";
+        const queries = [
+            "DELETE FROM users WHERE id = ?",
+            "DELETE FROM chat_members WHERE user_id = ?",
+            "DELETE FROM tokens WHERE user_id = ?",
+            "DELETE FROM messages WHERE user_id = ?",
+            "DELETE FROM chat_members WHERE user_id = ?"
+        ];
 
         return new Promise((resolve, reject) => {
-            this.db.run(query, [id], (error) => {error? reject(error) : resolve()});
+            queries.forEach((query) => {
+                this.db.run(query, [id], (error) => {error? reject(error) : resolve()});
+            });
+            
         });
     }
 
