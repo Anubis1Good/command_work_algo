@@ -1,0 +1,13 @@
+.card{
+    background-color: #8780e7;
+    width: 400px;
+    height: 150px;
+    margin-bottom: 30px;
+    display: inline;
+}
+.inline{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    margin:0 auto ;
+    gap: 20px;
+}
