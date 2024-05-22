@@ -28,12 +28,12 @@ export default function (props) {
             <div className={styles.chatHeader}>
                 {props.children}
                 <div className={styles.chatHeaderTitle}>{props.currentChat.name}</div>
-                <div className={styles.chatHeaderButtons}>
+                { props.currentChat.id !== -1 && <div className={styles.chatHeaderButtons}>
                     <button className={styles.chatHeaderButton} onClick={() => setIsDropdownOpen(!isDropdownOpen)}>...</button>
-                </div>
+                </div>}
             </div>
             
-            {isDropdownOpen ?
+            {isDropdownOpen && props.currentChat.id !== -1?
             <div className={styles.chatHeaderDropdown}>
                 <div className={styles.chatHeaderDropdownItem} onClick={() => {setIsDropdownOpen(false); handleAddInviteClick()}}>Создать приглашение</div>
 

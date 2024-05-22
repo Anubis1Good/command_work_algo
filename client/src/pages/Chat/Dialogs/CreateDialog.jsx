@@ -15,10 +15,12 @@ export default function CreateDialog() {
         if (response.error) {
             console.error(response.error);
             toast.error(response.error);
-            return;
+        }
+        else {
+            toast.success("Чат создан");
         }
 
-        toast.success("Чат создан");
+        
         dialogRef.current.close();
     };
 

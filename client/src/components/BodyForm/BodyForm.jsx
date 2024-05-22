@@ -29,7 +29,7 @@ export default function BodyForm({
   };
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit} className={className}>
+    <form ref={formRef}  onSubmit={handleSubmit} className={className}>
       {children}
     </form>
   );

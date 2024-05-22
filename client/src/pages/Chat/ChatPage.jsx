@@ -73,7 +73,7 @@ export default function () {
           const chat = JSON.parse(event.data);
           setChats(chats => chats.filter(ch => ch.id !== chat.id));
           if (chat.id === currentChat.id) {
-            setFirstChat()
+            setFirstChat(chats.filter(ch => ch.id !== chat.id));
             setMessages([]);
           }
         });
@@ -117,6 +117,10 @@ export default function () {
 
 
     useEffect(() => {
+        console.log(currentChat)
+        if (currentChat == {}) {
+            setCurrentChat({id:-1,name:"Нет чатов", members:[], owner_id:0, create_time:0});
+        }
         if (currentChat.id) {
             getChatMessages(currentChat.id).then((response) => {
                 setMessages(response);
@@ -139,7 +143,7 @@ export default function () {
           <div className={styles.wrapper}>
             <ChatHeader user={user} currentChat={currentChat}><button className={styles.burger} onClick={() => setIsOpen(!isOpen)}>Чаты</button></ChatHeader>
             <Messages messages={messages} currentChat={currentChat}  user={user} ref={messagesRef} />
-            {currentChat.id && (
+            { currentChat.id && (
               <BodyForm className={styles.send} navigateTo='' onSubmit={(event,formData ) => {sendMessage(currentChat.id, formData.message);}}>
                 <input type="text" name="message" required placeholder="Текст сообщения" />
                 <input type="submit" value="Отправить" />
