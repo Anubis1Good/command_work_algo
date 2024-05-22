@@ -2,7 +2,7 @@
 import { Router } from "express";
 import { main, sse } from "../controllers/main.js";
 import { createUser, loginUser, logoutUser, changePassword, deleteUser, isAuthenticated, getMyself, getUser } from "../controllers/users.js";
-import {getJoinedChats,getChat, createChat, getMembers, joinChat, leaveChat, transferOwnership, deleteChat, addInvite, deleteInvite, getUserInvites} from "../controllers/chats.js";
+import {getJoinedChats,getChat, createChat, getMembers, joinChat, leaveChat, transferOwnership, deleteChat, addInvite, deleteInvite, getUserInvites, renameChat,} from "../controllers/chats.js";
 import { deleteMessage, getMessages, sendMessage } from "../controllers/messages.js";
 const router = Router()
 
@@ -186,18 +186,122 @@ router.get('/chats/:chat_id/messages', getMessages);
  * @apiSuccess {Boolean} authenticated User authenticated
  */
 router.get('/authenticated', isAuthenticated);
-
+/**
+ * @api {get} /live/:chat_id Server-sent events
+ * @apiName GetLive
+ * @apiGroup Main
+ *
+ * @apiHeader {String} Authorization User token
+ * @apiParam {Number} chat_id Chat id
+ *
+ * @apiSuccess {String} event Event name
+ * @apiSuccess {Object} data Event data
+ */
 router.get('/live/:chat_id', sse);
 
+/**
+ * @api {post} /chats/:chat_id/leave Leave chat
+ * @apiName PostLeaveChat
+ * @apiGroup Chats
+ *
+ * @apiHeader {String} Authorization User token
+ * @apiParam {Number} chat_id Chat id
+ *
+ * @apiSuccess {String} message Chat left
+ */
 router.post('/chats/:chat_id/leave', leaveChat);
 
-router.post('chats/:chat_id/transfer', transferOwnership);
+/**
+ * @api {post} /chats/:chat_id/transfer Transfer ownership
+ * @apiName PostTransferOwnership
+ * @apiGroup Chats
+ *
+ * @apiHeader {String} Authorization User token
+ * @apiParam {Number} chat_id Chat id
+ * @apiParam {Number} user_id User id
+ *
+ * @apiSuccess {String} message Ownership transferred
+ */
+router.post('/chats/:chat_id/transfer', transferOwnership);
 
+/**
+ * @api {delete} /chats/:chat_id Delete chat
+ * @apiName DeleteDeleteChat
+ * @apiGroup Chats
+ *
+ * @apiHeader {String} Authorization User token
+ * @apiParam {Number} chat_id Chat id
+ *
+ * @apiSuccess {String} message Chat deleted
+ */
 router.delete('/chats/:chat_id/', deleteChat);
 
-router.get('/me',getMyself);
-router.get('/users/:user_id',getUser);
+/**
+ * @api {get} /me Get current user
+ * @apiName GetMe
+ * @apiGroup Users
+ *
+ * @apiHeader {String} Authorization User token
+ *
+ * @apiSuccess {Object} user User object
+ */
+router.get('/me', getMyself);
+
+/**
+ * @api {get} /users/:user_id Get user by id
+ * @apiName GetUser
+ * @apiGroup Users
+ *
+ * @apiParam {Number} user_id User id
+ *
+ * @apiSuccess {Object} user User object
+ */
+router.get('/users/:user_id', getUser);
+
+/**
+ * @api {get} /chats/:chat_id/invite Get invite token
+ * @apiName GetAddInvite
+ * @apiGroup Chats
+ *
+ * @apiParam {Number} chat_id Chat id
+ *
+ * @apiSuccess {String} token Invite token
+ */
 router.get('/chats/:chat_id/invite', addInvite);
+
+/**
+ * @api {delete} /chats/:chat_id/invite Delete invite token
+ * @apiName DeleteDeleteInvite
+ * @apiGroup Chats
+ *
+ * @apiParam {Number} chat_id Chat id
+ *
+ * @apiSuccess {String} message Invite deleted
+ */
 router.delete('/chats/:chat_id/invite', deleteInvite);
+
+/**
+ * @api {get} /chats/:chat_id/invites Get all invites for chat
+ * @apiName GetUserInvites
+ * @apiGroup Chats
+ *
+ * @apiParam {Number} chat_id Chat id
+ *
+ * @apiSuccess {Object[]} invites Array of invites
+ */
 router.get('/chats/:chat_id/invites', getUserInvites);
+
+/**
+ * @api {post} /chats/:chat_id/rename Rename chat
+ * @apiName PostRenameChat
+ * @apiGroup Chats
+ *
+ * @apiHeader {String} Authorization User token
+ * @apiParam {Number} chat_id Chat id
+ * @apiParam {String} name New chat name
+ *
+ * @apiSuccess {String} message Chat renamed
+ */
+router.post('/chats/:chat_id/rename', renameChat);
+
 export default router

@@ -34,8 +34,8 @@ export default function InviteMenu(props) {
         if (invites.length === 0 || invites[0].id === -1) return <p>Пусто</p>
         return invites.map((invite) => {
             return <div className={styles.inviteMenuInvite} key={invite.id}>
-                <p>Токен: {invite.token}</p>
-                <p>Закончится: {new Date(invite.expiry_time).toLocaleString()}</p>
+                <p className={styles.inviteMenuInviteText}>Токен: {invite.token}</p>
+                <p className={styles.inviteMenuInviteText}>Закончится: {new Date(invite.expiry_time).toLocaleString()}</p>
 
                 <button onClick={() => {
                     navigator.clipboard.writeText(invite.token)
