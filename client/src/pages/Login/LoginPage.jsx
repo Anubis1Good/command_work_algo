@@ -20,15 +20,16 @@ export default function () {
                 setIsAuthenticated(response);
             });
         }}>
+            <h1>Вход</h1>
             <label htmlFor="username"> Имя пользователя</label>
-            <input type="text" name="username" id="username" />
+            <input className={styles.login} type="text" name="username" id="username" />
 
             <label htmlFor="password"> Пароль</label>
-            <input type="password" name="password" id="password" />
+            <input className={styles.password} type="password" name="password" id="password" />
 
-            <button type="submit">Вход</button>
+            <button className={styles.submit} type="submit">Вход</button>
+            <p>Нет аккаунта? <Link to="/register">Зарегистрироваться</Link></p>
         </BodyForm>
-        <p>Нет аккаунта? <Link to="/register">Зарегистрироваться</Link></p>
         </>
     )
 }
