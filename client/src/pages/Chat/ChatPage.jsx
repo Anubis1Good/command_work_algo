@@ -78,9 +78,10 @@ export default function () {
           }
         });
 
-        eventSource.addEventListener("onIJoinChat", (event) => {
+        eventSource.addEventListener("onIJoinChat",async  (event) => {
           const chat = JSON.parse(event.data);
           setChats(chats => [...chats, chat]);
+          setCurrentChat(await (getChat(chat.id)));
         });
 
         eventSource.onerror = (event) => {
@@ -143,7 +144,7 @@ export default function () {
           <div className={styles.wrapper}>
             <ChatHeader user={user} currentChat={currentChat}><button className={styles.burger} onClick={() => setIsOpen(!isOpen)}>Чаты</button></ChatHeader>
             <Messages messages={messages} currentChat={currentChat}  user={user} ref={messagesRef} />
-            { currentChat.id && (
+            { currentChat.id !== -1 && (
               <BodyForm className={styles.send} navigateTo='' onSubmit={(event,formData ) => {sendMessage(currentChat.id, formData.message);}}>
                 <input type="text" name="message" required placeholder="Текст сообщения" />
                 <input type="submit" value="Отправить" />
