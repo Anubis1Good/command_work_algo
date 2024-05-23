@@ -42,6 +42,14 @@ class ChatsDB{
                 FOREIGN KEY(chat_id) REFERENCES chats(id),
                 FOREIGN KEY(user_id) REFERENCES users(id))
             `);
+
+            db.run(`CREATE TABLE IF NOT EXISTS chat_banned_users (
+                id INTEGER PRIMARY KEY UNIQUE NOT NULL,
+                chat_id INTEGER, user_id INTEGER, 
+                FOREIGN KEY(chat_id) REFERENCES chats(id), 
+                FOREIGN KEY(user_id) REFERENCES users(id),
+                UNIQUE(chat_id,user_id)
+            )`);
 });
     }
 
@@ -138,7 +146,9 @@ class ChatsDB{
         const params = [chat_id, user_id];
 
         return new Promise((resolve, reject) => {
-            this.db.run(query, params, (error) => {error? reject(error) : resolve()});
+            console.log(query,params)
+            this.db.run(query, params, function(error) {error? reject(error) : resolve()
+            console.log(this)});
         });
     }
     
@@ -150,6 +160,16 @@ class ChatsDB{
             this.db.all(query, params, (error, rows) => {error? reject(error) : resolve(rows)});
         });
     }
+
+    async getBannedUsersFromChat(chat_id) {
+        const query = "SELECT users.id, users.username FROM chat_banned_users INNER JOIN users ON chat_banned_users.user_id = users.id WHERE chat_id = ?";
+        const params = [chat_id];
+
+        return new Promise((resolve, reject) => {
+            this.db.all(query, params, (error, rows) => {error? reject(error) : resolve(rows)});
+        });
+    }
+
 
     async getChatsFromUser(user_id) {
         const query = "SELECT chats.* FROM chat_members INNER JOIN chats ON chat_members.chat_id = chats.id WHERE chat_members.user_id = ?";
@@ -170,7 +190,7 @@ class ChatsDB{
     }
     async addInvite(chat_id, user_id) {
         const queries = ["INSERT INTO chat_invites (chat_id,expiry_time,token,user_id) VALUES (?, ?, ?, ?)","SELECT * FROM chat_invites WHERE id = last_insert_rowid()"];
-        const params = [chat_id, generateExpiryTimeSpan(), randomBytes(32).toString('hex'), user_id];
+        const params = [chat_id, generateExpiryTimeSpan(), randomBytes(16).toString('hex'), user_id];
 
         return new Promise((resolve, reject) => {
             db.serialize(() => {
@@ -195,7 +215,12 @@ class ChatsDB{
         const params = [token];   
 
         return new Promise((resolve, reject) => {
-            this.db.get(query, params, (error, row) => {error? reject(error) : resolve(row)});
+            this.db.get(query, params, (error, row) => {error&& reject(error)
+                console.log(row)
+                if(!row) {reject("Invalid token");return;}
+                
+                if(isExpired(row.expiry_time)) {reject("Token expired"); this.deleteInvite(row.id) ; return;}
+                resolve(row)});
         });
     }
 
@@ -214,6 +239,49 @@ class ChatsDB{
         console.log("getUserInvites: "+params)
         return new Promise((resolve, reject) => {
             this.db.all(query, params, (error, rows) => {error? reject(error) : resolve(rows)});
+        });
+    }
+
+    async banUser(user_id, chat_id) {
+        const query = "INSERT INTO chat_banned_users (user_id, chat_id) VALUES (?, ?)";
+        const params = [user_id, chat_id];
+
+        return new Promise((resolve, reject) => {
+                console.log(query,params)
+                this.db.run(query, params, function (error) {error?reject(error) : resolve()
+                    console.log(this)
+                });
+        });
+    }
+
+    async unbanUser(user_id, chat_id) {
+        const query = "DELETE FROM chat_banned_users WHERE user_id = ? AND chat_id = ?";
+        const params = [user_id, chat_id];
+
+        return new Promise((resolve, reject) => {
+            this.db.run(query, params, (error) => {error? reject(error) : resolve()});
+        });
+    }
+
+    async getBannedUsers(chat_id) {
+        const query = `SELECT u.username, u.id
+        FROM chat_banned_users AS cbu
+        INNER JOIN users AS u ON cbu.user_id = u.id
+        WHERE cbu.chat_id = ?;`
+        const params = [chat_id];
+
+        return new Promise((resolve, reject) => {
+            this.db.all(query, params, (error, rows) => {error? reject(error) : resolve(rows);console.log(rows)});
+        });
+    }
+    async isBanned(user_id, chat_id) {
+        const query = "SELECT * FROM chat_banned_users WHERE chat_id = ?";
+        const params = [Number(chat_id)];
+        console.log(chat_id)
+        return new Promise((resolve, reject) => {
+            this.db.get(query, params, function(error, row) {error? reject(error) : resolve(!!row)
+                console.log(row)
+            });
         });
     }
 }

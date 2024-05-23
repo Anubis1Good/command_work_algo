@@ -112,6 +112,10 @@ export const joinChat = async (req, res) => {
         if (!await chats.exists(invite.chat_id)) {
             return res.json({ error: 'Chat doesnt exist you idiot sandwitch' }).status(404);
         }
+        if (await chats.isBanned(user_id,invite.chat_id)) {
+            return res.status(403).json({error:"You're banned from this chat"})
+        }
+        
         
         if (!invite) {
             return res.json({ error: 'Invalid invite' }).status(403);
@@ -273,3 +277,89 @@ export const getUserInvites = async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 }
+export const kickUser = async (req, res) => {
+    const user_id = await authenticate(req, res);
+    if (!user_id) {
+        return res.status(401).json({ error: 'Not logged in or invalid token' });
+    }
+    if (!req.params.chat_id) {
+        return res.status(400).json({ error: 'Invalid parameters' });
+    }
+    try {
+        if (!await chats.isOwner(req.params.chat_id,user_id)) {
+            return res.status(403).json({ error: 'Not the owner of this chat' });
+        }
+        emitter.emit('onLeaveChat', req.params.chat_id, req.body.user_id);
+        chats.deleteMember(req.params.chat_id,req.body.user_id);
+
+        res.json({ response: 'Kicked user' }).status(200);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+export const banUser = async (req, res) => {
+    const user_id = await authenticate(req, res);
+    if (!user_id) {
+        return res.status(401).json({ error: 'Not logged in or invalid token' });
+    }
+    if (!req.params.chat_id) {
+        return res.status(400).json({ error: 'Invalid parameters' });
+    }
+    try {
+        if (!await chats.isOwner( req.params.chat_id,user_id)) {
+            return res.status(403).json({ error: 'Not the owner of this chat' });
+        }
+        emitter.emit('onLeaveChat', req.params.chat_id, req.body.user_id);
+        await chats.deleteMember(req.params.chat_id,req.body.user_id);
+        await chats.banUser(req.body.user_id,req.params.chat_id);
+
+        res.json({ response: 'Banned user' }).status(200);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+export const unbanUser = async (req, res) => {
+    const user_id = await authenticate(req, res);
+    if (!user_id) {
+        return res.status(401).json({ error: 'Not logged in or invalid token' });
+    }
+    if (!req.params.chat_id) {
+        return res.status(400).json({ error: 'Invalid parameters' });
+    }
+    try {
+        if (!await chats.isOwner(user_id, req.params.chat_id)) {
+            return res.status(403).json({ error: 'Not the owner of this chat' });
+        }
+        await chats.unbanUser(req.params.chat_id, req.body.user_id);
+        res.json({ response: 'Unbanned user' }).status(200);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+export const getBannedUsers = async (req, res) => {
+    const user_id = await authenticate(req, res);
+    if (!user_id) {
+        return res.status(401).json({ error: 'Not logged in or invalid token' });
+    }
+    if (!req.params.chat_id) {
+        return res.status(400).json({ error: 'Invalid parameters' });
+    }
+    try {
+        const bannedUsers = await chats.getBannedUsers(req.params.chat_id);
+        res.json({ response: bannedUsers }).status(200);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+

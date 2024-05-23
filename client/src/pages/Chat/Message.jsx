@@ -1,9 +1,10 @@
+/* eslint-disable react/prop-types */
 import styles from './Messages.module.css'
 import { useState } from 'react';
 import { deleteMessage } from '../../utils/queries/messages';
 import Markdown from 'react-markdown';
 import { FaEllipsisVertical } from 'react-icons/fa6';
-import { getUser} from '../../utils/queries/chats';
+
 export default function Message(props) {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -12,22 +13,14 @@ export default function Message(props) {
         if ( member ) {
             return member.username
         } else {
-            getUser(user_id).then((data) => {
-                return data.name
-            })
+            return "..."
         }
 
     }
 
-    function handleClick(event) {
-        if (event.target === event.currentTarget) {
-            setIsDropdownOpen(!isDropdownOpen);
-            event.preventDefault();
-        }
-    }
 
-    function handleDropdownClick(event) {
-
+    function handleDropdownClick() {
+            
             setIsDropdownOpen(!isDropdownOpen);
     }
 

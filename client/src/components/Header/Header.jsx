@@ -1,13 +1,13 @@
 import { useContext, useState } from 'react';
 import styles from './Header.module.css'
 import {Nav} from "../Header/Nav/Nav";
-import {Link, useNavigate} from "react-router-dom";
+import { useNavigate} from "react-router-dom";
 import {AuthContext} from '../AuthProvider';
 
 import { signout } from '../../utils/queries/signout';
 
-export default function () {
-    const [isAuthenticated, setIsAuthenticated,user,setUser] = useContext(AuthContext);
+export default function Header() {
+    const [isAuthenticated, setIsAuthenticated,user] = useContext(AuthContext);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const navigate = useNavigate();
 

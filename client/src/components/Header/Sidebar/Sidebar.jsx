@@ -1,4 +1,5 @@
-import React ,{useEffect, useRef} from 'react'
+/* eslint-disable react/prop-types */
+import {useEffect, useRef} from 'react'
 import styles from './Sidebar.module.css'
 
 export default function Sidebar({ children, isOpen, setOpen }) {
