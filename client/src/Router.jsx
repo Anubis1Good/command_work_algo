@@ -4,7 +4,7 @@ import AboutPage from './pages/AboutPage.jsx'
 import MainPage from './pages/MainPage.jsx'
 import ErrorPage from './pages/ErrorPage.jsx'
 import RegisterPage from './pages/Register/RegisterPage.jsx'
-import UserPage from './pages/UserPage.jsx'
+import ContactsPage from './pages/Contacts/ContactsPage.jsx'
 import LoginPage from './pages/Login/LoginPage.jsx'
 import Layout from './pages/Layout.jsx'
 import ChatPage from './pages/Chat/ChatPage.jsx'
@@ -29,8 +29,8 @@ export const router = createBrowserRouter([
     },
 
     {
-      path: "user",
-      element: <Layout><UserPage/></Layout>
+      path: "contacts",
+      element: <Layout><ContactsPage/></Layout>
     },
 
     {
