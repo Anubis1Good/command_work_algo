@@ -42,7 +42,7 @@ const UserMenu = ( props ) => {
                 props.user.id === props.currentChat.owner_id && (
                   <>
                     <button
-                      onClick={() =>
+                      onClick={() =>{
                         banUser(props.currentChat.id, member.id)
                           .then(() =>
                             props.setCurrentChat((chat) => ({
@@ -51,9 +51,9 @@ const UserMenu = ( props ) => {
                                 (m) => m.id !== member.id
                               ),
                               action: 'update'
-                            }))
-                          )
-                      }
+                            })))
+                          setBannedUsers((users)=>users.push(member))
+                        }}
                       className={styles.userMenuMemberButton}
                     >
                       Забанить
