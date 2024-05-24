@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import styles from './Messages.module.css';
 import Message from './Message';
@@ -21,6 +22,7 @@ const MessagesForwardRef = React.forwardRef((props, ref) => {
 
         </div>
     )
-}, (props, ref) => React.forwardRef(Messages, ref))
+}, (props, ref) => React.forwardRef(Message, ref))
 
+MessagesForwardRef.displayName = 'MessagesForwardRef';
 export default MessagesForwardRef;

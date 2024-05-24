@@ -51,7 +51,7 @@ emitter.on("onLeaveChat", async (chat_id, user_id) => { // user_id = the id of t
         let user = members.find(member => member.id == user_id);
         for (let member of members) {
             if (member.id == user_id && users[user_id]) { // event only for the user who left
-                console.log("onILeaveChat")
+               
                 users[user_id].res.write("event: onILeaveChat\n");
                 users[user_id].res.write(`data: ${JSON.stringify(chat)}\n\n`);
                 continue;

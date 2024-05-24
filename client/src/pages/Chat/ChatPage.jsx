@@ -1,5 +1,5 @@
 
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { getJoinedChats,getChatMessages,getChat } from "../../utils/queries/chats";
 import BodyForm from '../../components/BodyForm/BodyForm';
 import styles from './ChatPage.module.css';
@@ -11,17 +11,18 @@ import ChatHeader from './СhatHeader';
 import Messages from './Messages';
 import toast from 'react-hot-toast';
 import { AuthContext } from '../../components/AuthProvider';
-import { IoSend } from 'react-icons/io5';
+
 import Sidebar from "../../components/Header/Sidebar/Sidebar";
-import { RxHamburgerMenu } from 'react-icons/rx';
-export default function () {
+
+export default function ChatPage() {
 
     const [messages, setMessages] = useState([]);
     const [chats, setChats] = useState([]);
     const [currentChat, setCurrentChat] = useState({});
-    const [authenticated, setIsAuthenticated,user,setUser] = useContext(AuthContext);
+    const user = useContext(AuthContext)[2];
     const messagesRef = useRef(null);
     const [isOpen, setIsOpen] = useState(false);
+
 
     function setFirstChat(chats) {
       console.log(chats)
@@ -34,27 +35,24 @@ export default function () {
         setCurrentChat({id:-1,name:"Нет чатов", members:[], owner_id:0, create_time:0});
       }
     }
-    function scrollToBottom() {
-      if (messagesRef.current && !(messagesRef.current.scrollHeight - messagesRef.current.scrollTop === messagesRef.current.clientHeight)) { // If not scrolled to the bottom
-        messagesRef.current.scrollTo({
-          top: messagesRef.current.scrollHeight,
-          behavior: 'smooth'
-        });
-      }
-    }
-    const SSE = () => {
+
+    useEffect(() => {
+      messages[1] && messages[1].action === 'add' && messagesRef.current.scrollTo({ top: messagesRef.current.scrollHeight, behavior: 'smooth' });
+    }, [messages]);
+
+    const SSE = useCallback(() => {
       if (currentChat.id) {
         const eventSource = new EventSource('/api/v1/live/' + currentChat.id);
 
         eventSource.addEventListener('onSendMessage', (event) => {
           const message = JSON.parse(event.data);
-          setMessages(messages => [...messages, message]);
-          scrollToBottom();
+          setMessages(messages => [[...messages[0], message],{action:'add'}]);
+
         });
         eventSource.addEventListener('onMessageDelete', (event) => {
           console.log(event.data)
           const message_id = JSON.parse(event.data).id;
-          setMessages(messages => messages.filter(message => message.id !== message_id));
+          setMessages(messages => [messages[0].filter(message => message.id !== message_id),{action:'delete'}]);
         });
     
         eventSource.addEventListener('onJoinChat', (event) => {
@@ -74,7 +72,7 @@ export default function () {
           setChats(chats => chats.filter(ch => ch.id !== chat.id));
           if (chat.id === currentChat.id) {
             setFirstChat(chats.filter(ch => ch.id !== chat.id));
-            setMessages([]);
+            setMessages([[],{action:'clear'}]);
           }
         });
 
@@ -84,7 +82,7 @@ export default function () {
           setCurrentChat(await (getChat(chat.id)));
         });
 
-        eventSource.onerror = (event) => {
+        eventSource.onerror = () => {
           eventSource.close();
           toast("Соединение разорвано, пробуем переподключиться...");
           setTimeout(() => SSE(), 3000);
@@ -98,7 +96,7 @@ export default function () {
     else {
       setFirstChat(chats)
     }
-    }
+    },[currentChat,chats])
 
     useEffect(() => {
       async function fetchData() {
@@ -113,7 +111,7 @@ export default function () {
         if (currentChat.id) {
          return SSE();
         }
-      }, [currentChat]);
+      }, [SSE, currentChat]);
     
 
 
@@ -124,7 +122,7 @@ export default function () {
         }
         if (currentChat.id) {
             getChatMessages(currentChat.id).then((response) => {
-                setMessages(response);
+                setMessages([response,{action:'add'}]);
             });
         }
     }, [currentChat]);
@@ -142,8 +140,8 @@ export default function () {
           </ChatStack>
           </Sidebar>
           <div className={styles.wrapper}>
-            <ChatHeader user={user} currentChat={currentChat}><button className={styles.burger} onClick={() => setIsOpen(!isOpen)}>Чаты</button></ChatHeader>
-            <Messages messages={messages} currentChat={currentChat}  user={user} ref={messagesRef} />
+            <ChatHeader user={user} currentChat={currentChat} setCurrentChat={setCurrentChat}><button className={styles.burger} onClick={() => setIsOpen(!isOpen)}>Чаты</button></ChatHeader>
+            <Messages messages={messages[0]} currentChat={currentChat}  user={user} ref={messagesRef} />
             { currentChat.id !== -1 && (
               <BodyForm className={styles.send} navigateTo='' onSubmit={(event,formData ) => {sendMessage(currentChat.id, formData.message);}}>
                 <input type="text" name="message" required placeholder="Текст сообщения" />

@@ -2,7 +2,7 @@
 import { Router } from "express";
 import { main, sse } from "../controllers/main.js";
 import { createUser, loginUser, logoutUser, changePassword, deleteUser, isAuthenticated, getMyself, getUser } from "../controllers/users.js";
-import {getJoinedChats,getChat, createChat, getMembers, joinChat, leaveChat, transferOwnership, deleteChat, addInvite, deleteInvite, getUserInvites, renameChat,} from "../controllers/chats.js";
+import {getJoinedChats,getChat, createChat, getMembers, joinChat, leaveChat, transferOwnership, deleteChat, addInvite, deleteInvite, getUserInvites, renameChat, kickUser, banUser, unbanUser, getBannedUsers,} from "../controllers/chats.js";
 import { deleteMessage, getMessages, sendMessage } from "../controllers/messages.js";
 const router = Router()
 
@@ -303,5 +303,14 @@ router.get('/chats/:chat_id/invites', getUserInvites);
  * @apiSuccess {String} message Chat renamed
  */
 router.post('/chats/:chat_id/rename', renameChat);
+
+router.post('/chats/:chat_id/kick', kickUser);
+
+router.post('/chats/:chat_id/ban', banUser);
+
+router.post('/chats/:chat_id/unban', unbanUser);
+
+router.get('/chats/:chat_id/banned', getBannedUsers);
+
 
 export default router

@@ -13,7 +13,6 @@ export const registerUser = async (name, password) => {
   }
   catch(e){
     return false
-    console.log(e)
   }
 }
 

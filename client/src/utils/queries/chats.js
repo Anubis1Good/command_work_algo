@@ -146,6 +146,39 @@ export const kickUser = async (chatId, userId) => {
     return data.response;
 }
 
+export const getBannedUsers = async (chatId) => {
+    const response = await fetch(`/api/v1/chats/${chatId}/banned`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        }});
+    const data = await response.json();
+    return data.response;
+}
+
+export const banUser = async (chatId, userId) => {
+    const response = await fetch(`/api/v1/chats/${chatId}/ban`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({user_id: userId})
+    });
+    const data = await response.json();
+    return data;
+}
+
+export const unbanUser = async (chatId, userId) => {
+    const response = await fetch(`/api/v1/chats/${chatId}/unban`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({user_id: userId})
+    });
+    const data = await response.json();
+    return data;
+}
 export const getUserInvites = async (chatId) => {
     const response = await fetch(`/api/v1/chats/${chatId}/invites`, {
         method: "GET",

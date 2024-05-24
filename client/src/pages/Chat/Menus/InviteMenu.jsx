@@ -29,6 +29,13 @@ export default function InviteMenu(props) {
             setInvites(data);
         })
     }, [ props.isInviteMenuOpen])
+
+    function deleteAllInvites() {
+        invites.forEach((invite) => {
+            deleteInvite(invite.id)
+        })
+        setInvites([])
+    }
     function renderInvitesList(invites) {
         if (invites.length === 0 || invites[0].id === -1) return <p>Пусто</p>
         return invites.map((invite) => {
@@ -56,6 +63,7 @@ export default function InviteMenu(props) {
                 <button onClick={() => props.setIsInviteMenuOpen(false)} className={styles.close}><IoMdClose /></button></div>
                 <div className={styles.inviteMenuContent}>
                 {renderInvites()}</div>
+                <button className={styles.inviteMenuInviteButton} onClick={() =>deleteAllInvites()}>Удалить все</button>
             </dialog>
         </>
     )

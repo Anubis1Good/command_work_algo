@@ -1,8 +1,8 @@
-import {useCallback, useContext, useRef, useState } from 'react'
-import { registerUser } from '../../utils/queries/authenticate'
+/* eslint-disable react/prop-types */
+import {useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom';
 
-import { AuthContext } from '../AuthProvider';
+
 
 export default function BodyForm({
   children,
@@ -13,7 +13,7 @@ export default function BodyForm({
 }) {
   const formRef = useRef(null);
 
-  const onSubmitHandler = useCallback(onSubmit);
+  const onSubmitHandler = useCallback(onSubmit,[onSubmit]);
   const navigate = useNavigate();
 
 

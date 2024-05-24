@@ -16,7 +16,7 @@
     flex-grow: 0.125;
     height: 10%;
     width: 100%;
-
+    min-height: 3rem;
     display: flex;
 
 

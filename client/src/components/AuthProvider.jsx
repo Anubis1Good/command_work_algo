@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { createContext, useState, useEffect } from 'react';
 import { getIsAuthenticated } from '../utils/queries/authenticated';
 import { getMyself } from '../utils/queries/authenticate';
@@ -25,4 +26,4 @@ export function AuthProvider ({ children }) {
             {children}
         </AuthContext.Provider>
     );
-};
+}

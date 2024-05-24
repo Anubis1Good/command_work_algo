@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import React, { useContext, useState } from 'react'
+import { useContext, useState } from 'react'
 import styles from "./Nav.module.css"
 
 import Sidebar from "../Sidebar/Sidebar";
@@ -14,7 +14,7 @@ export function Nav() {
     const [isOpen, setIsOpen] = useState(false)
     const toggleNav = () => {setIsOpen(!isOpen)}
 
-    const [isAuthenticated, setIsAuthenticated] = useContext(AuthContext);
+    const [isAuthenticated] = useContext(AuthContext);
     return (
         <>
         <Sidebar isOpen={isOpen} setOpen={setIsOpen}>

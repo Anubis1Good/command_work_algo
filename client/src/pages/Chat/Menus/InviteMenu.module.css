@@ -1,4 +1,4 @@
-.inviteMenu {
+.inviteMenu[open] {
     background-color: rgba(128, 128, 128, 0.15);
     border-radius: 1rem;
     padding: 1rem;
@@ -6,7 +6,10 @@
     outline: none;
     color: white;
     font-size: large;
+    display: flex;
     position: fixed;
+    flex-direction: column;
+    gap: 1rem;
 
 }
 .inviteMenu::backdrop {
@@ -18,7 +21,6 @@
     justify-content: space-between;
     align-items: center;
     font-size: larger;
-    margin-bottom: 1rem;
     gap: 1rem;
 }
 .inviteMenuHeader > p {
@@ -44,7 +46,7 @@
     gap: 1rem;
 
 }
-.inviteMenuInvite > button {
+.inviteMenuInviteButton {
     background: rgba(128, 128, 128, 0.3);
     border: none;
     font-size: medium;
