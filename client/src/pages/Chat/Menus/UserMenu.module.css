@@ -7,8 +7,8 @@
        justify-content: space-between;
        color:white;
        flex-direction: column;
-       width: 50dvw;
-       height: 20dvh;
+       width: 30dvw;
+       height: 50dvh;
 
 
 }
@@ -46,6 +46,7 @@
     max-height: 50vh;
     overflow-y: auto;
     margin-top: 1rem;
+    height: 100%;
 
 }
 .userMenuContent::backdrop {

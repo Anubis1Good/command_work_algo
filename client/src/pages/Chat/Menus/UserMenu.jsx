@@ -22,6 +22,8 @@ const UserMenu = ( props ) => {
     })
   },[props.currentChat.id])
 
+  useEffect(()=>{},[props.currentChat.members])
+
   return (
     <dialog className={styles.userMenu} ref={dialogRef}>
       <div className={styles.userMenuHeader}>
@@ -52,7 +54,7 @@ const UserMenu = ( props ) => {
                               ),
                               action: 'update'
                             })))
-                          setBannedUsers((users)=>users.push(member))
+                          setBannedUsers((users)=>[...users,member])
                         }}
                       className={styles.userMenuMemberButton}
                     >

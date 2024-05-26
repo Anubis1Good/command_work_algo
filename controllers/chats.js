@@ -333,10 +333,10 @@ export const unbanUser = async (req, res) => {
         return res.status(400).json({ error: 'Invalid parameters' });
     }
     try {
-        if (!await chats.isOwner(user_id, req.params.chat_id)) {
+        if (!await chats.isOwner(req.params.chat_id,user_id )) {
             return res.status(403).json({ error: 'Not the owner of this chat' });
         }
-        await chats.unbanUser(req.params.chat_id, req.body.user_id);
+        await chats.unbanUser(req.body.user_id,req.params.chat_id);
         res.json({ response: 'Unbanned user' }).status(200);
 
     } catch (error) {
@@ -354,7 +354,7 @@ export const getBannedUsers = async (req, res) => {
         return res.status(400).json({ error: 'Invalid parameters' });
     }
     try {
-        const bannedUsers = await chats.getBannedUsers(req.params.chat_id);
+        const bannedUsers = await chats.getBannedUsersFromChat(req.params.chat_id);
         res.json({ response: bannedUsers }).status(200);
 
     } catch (error) {
