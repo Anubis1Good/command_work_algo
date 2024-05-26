@@ -1,6 +1,6 @@
 
 import {createBrowserRouter} from 'react-router-dom'
-import AboutPage from './pages/AboutPage.jsx'
+import AboutPage from './pages/AboutProject/AboutProject.jsx'
 import MainPage from './pages/MainPage.jsx'
 import ErrorPage from './pages/ErrorPage.jsx'
 import RegisterPage from './pages/Register/RegisterPage.jsx'
