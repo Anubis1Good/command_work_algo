@@ -1,0 +1,52 @@
+.torpeda{
+    width: 190px;
+    align-items: center;
+}
+.header {
+    color: white;
+    font-size: 10vh;
+}
+.pictureChat{
+    width: 50%;
+    justify-content: space-around;
+    padding: 5px 50px;
+    /* height: 30%; */
+}
+.chat{
+    display: flex;
+    align-items: center;
+    /* width: 50%; */
+}
+/* .body {
+    background-image: url('торпеда.png');
+    ba
+} */
+.body:before {
+    content: "";
+    position: absolute;
+    width: 500%;
+    height: 500%;
+    top: -50%;
+    left: -50%;
+    z-index: -1;
+    background: url('торпеда.png') 0 0 repeat;
+    background-color: rgba(0, 0, 0, 0.484);
+    background-blend-mode: color;
+    -webkit-transform: rotate(30deg);
+    -moz-transform: rotate(30deg);
+    -ms-transform: rotate(30deg);
+    -o-transform: rotate(30deg);
+    transform: rotate(30deg);
+  }
+
+.text {
+    text-shadow: 1px 1px 10px black;
+    color: rgb(255, 255, 255);
+    font-size: 5vh;
+    font-style: italic;
+}
+.grand {
+    width: 80%;
+    margin: 500px auto;
+    transform: translate(10%) rotate(30deg);
+}
