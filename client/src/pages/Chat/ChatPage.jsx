@@ -46,6 +46,9 @@ export default function ChatPage() {
 
         eventSource.addEventListener('onSendMessage', (event) => {
           const message = JSON.parse(event.data);
+          if (document.visibilityState !== "visible") {
+                  new Audio('/notification.mp3').play();
+                }
           setMessages(messages => [[...messages[0], message],{action:'add'}]);
 
         });

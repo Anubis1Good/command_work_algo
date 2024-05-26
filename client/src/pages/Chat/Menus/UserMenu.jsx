@@ -22,7 +22,6 @@ const UserMenu = ( props ) => {
     })
   },[props.currentChat.id])
 
-  useEffect(()=>{},[props.currentChat.members])
 
   return (
     <dialog className={styles.userMenu} ref={dialogRef}>
