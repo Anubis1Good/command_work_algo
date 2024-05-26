@@ -41,10 +41,10 @@
     outline: none;
     background: rgba(255, 255, 255, 0.3);
 }
-.form > input[type="submit"]:hover{
-    background: rgba(255, 255, 255, 0.3);
+.sumbit:hover{
+    background: rgba(255, 255, 255, 0.7);
 }
-.form > input[type="submit"]{
+.submit{
     border-radius: 1rem;
     cursor: pointer;
     background: rgba(255, 255, 255, 0.2);
