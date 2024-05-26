@@ -1,0 +1,37 @@
+h3 {
+    font-family: "Comfortaa", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    color: #8b005d;
+}
+
+li {
+    font-family: "Comfortaa", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    color: #b9007c;
+    font-size: 13px;
+}
+
+h1{
+    font-family: "Comfortaa", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    color: #8b005d;
+    text-align: center;
+}
+
+p {
+    font-family: "Comfortaa", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    color: #7f008b;
+    font-size: 13px;
+}
+
+h5{
+    font-family: "Comfortaa", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    color: #b40379;
+}
