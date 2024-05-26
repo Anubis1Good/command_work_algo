@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useEffect, useRef, useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import { deleteInvite } from "../../../utils/queries/chats";
@@ -28,7 +29,7 @@ export default function InviteMenu(props) {
             }
             setInvites(data);
         })
-    }, [ props.isInviteMenuOpen])
+    }, [props.currentChat.id, props.isInviteMenuOpen])
 
     function deleteAllInvites() {
         invites.forEach((invite) => {

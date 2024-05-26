@@ -22,6 +22,7 @@ const UserMenu = ( props ) => {
     })
   },[props.currentChat.id])
 
+
   return (
     <dialog className={styles.userMenu} ref={dialogRef}>
       <div className={styles.userMenuHeader}>
@@ -42,7 +43,7 @@ const UserMenu = ( props ) => {
                 props.user.id === props.currentChat.owner_id && (
                   <>
                     <button
-                      onClick={() =>
+                      onClick={() =>{
                         banUser(props.currentChat.id, member.id)
                           .then(() =>
                             props.setCurrentChat((chat) => ({
@@ -51,9 +52,9 @@ const UserMenu = ( props ) => {
                                 (m) => m.id !== member.id
                               ),
                               action: 'update'
-                            }))
-                          )
-                      }
+                            })))
+                          setBannedUsers((users)=>[...users,member])
+                        }}
                       className={styles.userMenuMemberButton}
                     >
                       Забанить

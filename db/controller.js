@@ -195,7 +195,6 @@ class ChatsDB{
         return new Promise((resolve, reject) => {
             db.serialize(() => {
                 this.db.run(queries[0], params, (error) => {error&&reject(error)});
-                this.db.run("SELECT * FROM chat_invites", (error, row) => {error? reject(error) : console.log(row)});
                 this.db.get(queries[1], (error, row) => {error? reject(error) : resolve(row)});
 
             });
@@ -211,9 +210,9 @@ class ChatsDB{
     }
 
     async getInvite(token) {
-        const query = "SELECT * FROM chat_invites WHERE token = ?";
+        const query = "SELECT * FROM chat_invites WHERE token=?";
         const params = [token];   
-
+        console.log(token)
         return new Promise((resolve, reject) => {
             this.db.get(query, params, (error, row) => {error&& reject(error)
                 console.log(row)
@@ -262,22 +261,11 @@ class ChatsDB{
             this.db.run(query, params, (error) => {error? reject(error) : resolve()});
         });
     }
-
-    async getBannedUsers(chat_id) {
-        const query = `SELECT u.username, u.id
-        FROM chat_banned_users AS cbu
-        INNER JOIN users AS u ON cbu.user_id = u.id
-        WHERE cbu.chat_id = ?;`
-        const params = [chat_id];
-
-        return new Promise((resolve, reject) => {
-            this.db.all(query, params, (error, rows) => {error? reject(error) : resolve(rows);console.log(rows)});
-        });
-    }
+    
     async isBanned(user_id, chat_id) {
-        const query = "SELECT * FROM chat_banned_users WHERE chat_id = ?";
-        const params = [Number(chat_id)];
-        console.log(chat_id)
+        const query = "SELECT * FROM chat_banned_users WHERE user_id = ? AND chat_id = ?";
+        const params = [user_id,Number(chat_id)];
+        console.log(chat_id,user_id)
         return new Promise((resolve, reject) => {
             this.db.get(query, params, function(error, row) {error? reject(error) : resolve(!!row)
                 console.log(row)
@@ -511,5 +499,6 @@ class UsersDB {
 const users = new UsersDB(db)
 const tokens = new TokensDB(db)
 const chats = new ChatsDB(db)
+
 const messages = new MessagesDB(db)
 export {users, tokens, chats, messages}

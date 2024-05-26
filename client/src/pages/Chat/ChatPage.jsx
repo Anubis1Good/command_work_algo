@@ -11,7 +11,7 @@ import ChatHeader from './СhatHeader';
 import Messages from './Messages';
 import toast from 'react-hot-toast';
 import { AuthContext } from '../../components/AuthProvider';
-
+import { Suspense } from 'react';
 import Sidebar from "../../components/Header/Sidebar/Sidebar";
 
 export default function ChatPage() {
@@ -46,6 +46,9 @@ export default function ChatPage() {
 
         eventSource.addEventListener('onSendMessage', (event) => {
           const message = JSON.parse(event.data);
+          if (document.visibilityState !== "visible") {
+                  new Audio('/notification.mp3').play();
+                }
           setMessages(messages => [[...messages[0], message],{action:'add'}]);
 
         });
@@ -131,6 +134,10 @@ export default function ChatPage() {
       return !!chats && (
         <div className={ styles.chat }>
           
+
+          <Suspense fallback={<div>Loading...</div>}>
+      
+
           <Sidebar isOpen={isOpen} setOpen={setIsOpen} className={styles.sidebar}>
           <ChatStack chats={chats} setCurrentChat={setCurrentChat} className={styles.chats}>
             <div className={styles.dialogsWrapper}>
@@ -149,6 +156,8 @@ export default function ChatPage() {
               </BodyForm>
             )}
           </div>
+        </Suspense>
+
         </div>)
     }
 
