@@ -1,9 +1,21 @@
 .card{
-    background-color: #af5cc2;
+
+    background: linear-gradient(130deg, #ce70d6, #793a9f);
+
     width: 400px;
     height: 150px;
     margin-bottom: 30px;
     display: inline;
+    border-radius: 1rem;
+    color: white;
+    padding: 1rem;
+
+}
+.card > ul {
+    display: flex;
+    gap: 20px;
+    list-style: none;
+    flex-direction: column;
 }
 .inline{
     display: grid;
