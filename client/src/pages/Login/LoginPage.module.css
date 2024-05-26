@@ -4,11 +4,10 @@
     border-radius: 15px;
     font-weight: bold;
     margin-bottom: 30px;
-    color: rgb(24, 23, 23);
-    background:#8780e7;
+    background:#af5cc2;
     color: white;
     background: #2c2c2c;
-    border: 2px solid #403b8a;
+    border: 2px solid #af5cc2;
 }
 .password{
     width: 100%;
@@ -17,9 +16,9 @@
     font-weight: bold;
     color: white;
     background: #2c2c2c;
-    border: 2px solid #403b8a;
+    border: 2px solid #af5cc2;
     color: rgb(24, 23, 23);
-    background:#8780e7;
+    background:#af5cc2;
 }
 .submit{
     margin-top: 30px;
@@ -30,11 +29,11 @@
     color: white;
     background: #1f1f1f;
     color: rgb(49, 48, 63);
-    background: #6A5ACD;
+    background: #af5cc2;
 }
 .form{
-    color: rgb(24, 23, 23);
-    background:#8780e7;
+    color: white;
+    background:#af5cc2;
     border-radius: 17px;
     border: none;
     width: 500px;
